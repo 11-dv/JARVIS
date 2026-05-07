@@ -151,6 +151,28 @@
   .m-btn.sec{background:transparent;color:var(--text2);border-color:var(--border);}
   .m-btn.sec:hover{background:rgba(255,255,255,0.04);color:var(--text);}
 
+  /* VOICE */
+  .voice-bar{display:flex;align-items:center;gap:10px;padding:6px 24px;background:rgba(10,21,32,0.97);border-bottom:1px solid var(--border);}
+  .voice-label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);letter-spacing:2px;white-space:nowrap;}
+  .voice-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;}
+  .voice-toggle input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
+  .voice-toggle span{font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:1px;}
+  .voice-toggle:hover span{color:var(--accent);}
+  .voice-rate{display:flex;align-items:center;gap:8px;}
+  .voice-rate label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);letter-spacing:1px;}
+  .voice-rate input[type=range]{width:80px;accent-color:var(--accent);cursor:pointer;}
+  .voice-rate span{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--accent2);min-width:24px;}
+  .voice-lang{background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:5px;padding:4px 8px;color:var(--text2);font-family:'Share Tech Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
+  .voice-lang option{background:#0a1520;}
+  .stop-btn{background:rgba(255,68,102,0.08);border:1px solid rgba(255,68,102,0.25);border-radius:5px;padding:4px 12px;color:rgba(255,68,102,0.7);font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;}
+  .stop-btn:hover{background:rgba(255,68,102,0.15);color:var(--danger);}
+  .mic-btn{width:34px;height:34px;border-radius:8px;background:rgba(0,212,255,0.08);border:1px solid var(--border2);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+  .mic-btn:hover{background:rgba(0,212,255,0.2);box-shadow:var(--glow);}
+  .mic-btn.listening{background:rgba(255,68,102,0.15);border-color:rgba(255,68,102,0.4);color:var(--danger);animation:micPulse 0.8s ease-in-out infinite;}
+  @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,102,0.4);}50%{box-shadow:0 0 0 8px rgba(255,68,102,0);}}
+  .speak-btn{background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:2px 4px;transition:color 0.2s;line-height:1;}
+  .speak-btn:hover{color:var(--accent);}
+
   /* DECORATIONS */
   .corner{position:fixed;width:26px;height:26px;border-color:var(--accent);border-style:solid;opacity:0.22;z-index:5;}
   .corner.tl{top:8px;left:8px;border-width:2px 0 0 2px;}
@@ -197,6 +219,29 @@
     <div class="dot warn" id="keyDot"></div>
     <span id="keyTxt">NO KEY</span>
   </div>
+</div>
+
+<!-- VOICE BAR -->
+<div class="voice-bar">
+  <span class="voice-label">VOICE</span>
+  <label class="voice-toggle">
+    <input type="checkbox" id="voiceOn" onchange="toggleVoice(this.checked)">
+    <span id="voiceToggleLabel">AUTO-SPEAK OFF</span>
+  </label>
+  <div style="width:1px;height:16px;background:var(--border);margin:0 4px;"></div>
+  <div class="voice-rate">
+    <label>SPEED</label>
+    <input type="range" id="voiceRate" min="0.6" max="1.8" step="0.1" value="1.0" oninput="document.getElementById('rateVal').textContent=this.value+'x'">
+    <span id="rateVal">1.0x</span>
+  </div>
+  <div style="width:1px;height:16px;background:var(--border);margin:0 4px;"></div>
+  <select class="voice-lang" id="voiceLang" onchange="setVoiceLang()">
+    <option value="en-US">English (US)</option>
+    <option value="en-GB">English (UK)</option>
+    <option value="ta-IN">Tamil (India)</option>
+    <option value="auto">Auto detect</option>
+  </select>
+  <button class="stop-btn" onclick="stopSpeaking()">■ STOP</button>
 </div>
 
 <!-- CORS BANNER -->
@@ -274,6 +319,13 @@
         <button class="send-btn" id="sendBtn" onclick="send()">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
             <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice input">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M5 10a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </button>
       </div>
@@ -430,14 +482,19 @@ function addMsg(role, content, ms) {
   const t = new Date().toLocaleTimeString('en-US',{hour12:false});
   const model = document.getElementById('modelSel').value.split('-').slice(0,3).join(' ');
   const speedInfo = ms ? `<span class="m-speed">${(ms/1000).toFixed(1)}s</span>` : '';
+  const speakBtn = role === 'jarvis' ? `<button class="speak-btn" onclick="speakMsg(this)" title="Read aloud">🔊</button>` : '';
   d.innerHTML = `
     <div class="avatar">${role==='jarvis'?'J':'A'}</div>
     <div>
       <div class="bubble">${role==='jarvis'?fmt(content):content}</div>
-      <div class="meta">${t}${role==='jarvis'?` <span class="m-badge">${model}</span>${speedInfo}`:''}</div>
+      <div class="meta">${t}${role==='jarvis'?` <span class="m-badge">${model}</span>${speedInfo}${speakBtn}`:''}</div>
     </div>`;
   m.appendChild(d);
   m.scrollTop = m.scrollHeight;
+  // Auto-speak Jarvis replies
+  if (role === 'jarvis' && voiceEnabled) {
+    setTimeout(() => speak(content), 300);
+  }
 }
 
 function showTyping() {
@@ -456,7 +513,138 @@ function setStatus(b) {
   document.getElementById('statusText').textContent = b ? 'THINKING...' : 'READY';
 }
 
-// ===== GROQ API =====
+// ===== VOICE OUTPUT (TTS) =====
+let voiceEnabled = localStorage.getItem('jarvis_voice') === 'true';
+let voiceLang = localStorage.getItem('jarvis_voice_lang') || 'en-US';
+let speaking = false;
+
+// Init voice toggle state
+document.getElementById('voiceOn').checked = voiceEnabled;
+document.getElementById('voiceToggleLabel').textContent = voiceEnabled ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
+document.getElementById('voiceLang').value = voiceLang;
+
+function toggleVoice(on) {
+  voiceEnabled = on;
+  localStorage.setItem('jarvis_voice', on);
+  document.getElementById('voiceToggleLabel').textContent = on ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
+  if (!on) stopSpeaking();
+}
+
+function setVoiceLang() {
+  voiceLang = document.getElementById('voiceLang').value;
+  localStorage.setItem('jarvis_voice_lang', voiceLang);
+}
+
+function stopSpeaking() {
+  window.speechSynthesis.cancel();
+  speaking = false;
+}
+
+function detectLang(text) {
+  // Check if text contains Tamil Unicode characters
+  const tamilRange = /[\u0B80-\u0BFF]/;
+  if (tamilRange.test(text)) return 'ta-IN';
+  return 'en-US';
+}
+
+function stripMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/`(.*?)`/g, '$1')
+    .replace(/<br>/g, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/#{1,6}\s/g, '')
+    .trim();
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  stopSpeaking();
+
+  const clean = stripMarkdown(text);
+  if (!clean) return;
+
+  const utter = new SpeechSynthesisUtterance(clean);
+  utter.rate = parseFloat(document.getElementById('voiceRate').value);
+  utter.pitch = 1.0;
+  utter.volume = 1.0;
+
+  // Language: auto-detect or manual
+  const sel = document.getElementById('voiceLang').value;
+  utter.lang = sel === 'auto' ? detectLang(clean) : sel;
+
+  // Try to find a matching voice
+  const voices = window.speechSynthesis.getVoices();
+  const match = voices.find(v => v.lang === utter.lang) ||
+                voices.find(v => v.lang.startsWith(utter.lang.split('-')[0]));
+  if (match) utter.voice = match;
+
+  utter.onstart = () => { speaking = true; };
+  utter.onend = () => { speaking = false; };
+  utter.onerror = () => { speaking = false; };
+
+  window.speechSynthesis.speak(utter);
+}
+
+// Speak button on each message
+function speakMsg(btn) {
+  const bubble = btn.closest('.msg').querySelector('.bubble');
+  speak(bubble.innerText);
+}
+
+// ===== VOICE INPUT (STT) =====
+let recognition = null;
+let isListening = false;
+
+function initRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  const r = new SR();
+  r.continuous = false;
+  r.interimResults = false;
+  r.lang = voiceLang === 'auto' ? 'en-US' : voiceLang;
+
+  r.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('userInput').value = transcript;
+    setMicUI(false);
+    isListening = false;
+    send();
+  };
+  r.onerror = () => { setMicUI(false); isListening = false; };
+  r.onend   = () => { setMicUI(false); isListening = false; };
+  return r;
+}
+
+function setMicUI(on) {
+  const btn = document.getElementById('micBtn');
+  btn.classList.toggle('listening', on);
+  btn.title = on ? 'Listening… click to stop' : 'Voice input';
+}
+
+function toggleMic() {
+  if (isListening) {
+    recognition?.stop();
+    setMicUI(false);
+    isListening = false;
+    return;
+  }
+  recognition = initRecognition();
+  if (!recognition) {
+    alert('Voice input not supported in this browser. Use Chrome or Edge.');
+    return;
+  }
+  recognition.lang = voiceLang === 'auto' ? 'en-US' : voiceLang;
+  recognition.start();
+  setMicUI(true);
+  isListening = true;
+}
+
+// Patch addMsg to add speak button + auto-speak
+const _origAddMsg = addMsg;
+// Override to inject speak button and auto-speak
+
 async function send() {
   if (busy) return;
   const inp = document.getElementById('userInput');
