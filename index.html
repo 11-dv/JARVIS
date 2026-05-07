@@ -18,7 +18,7 @@
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
   body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
   body::after{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(0,136,204,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
-
+ 
   /* HEADER */
   header{position:relative;z-index:10;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(5,10,15,0.97);backdrop-filter:blur(10px);}
   .logo-area{display:flex;align-items:center;gap:12px;}
@@ -35,7 +35,7 @@
   @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
   .time-display{font-family:'Orbitron',monospace;font-size:13px;color:var(--accent);letter-spacing:2px;opacity:0.8;}
   .speed-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--accent3);background:rgba(0,255,204,0.08);border:1px solid rgba(0,255,204,0.2);border-radius:4px;padding:2px 8px;}
-
+ 
   /* API BAR */
   .api-bar{position:relative;z-index:10;padding:8px 24px;display:flex;align-items:center;gap:10px;background:rgba(10,21,32,0.97);border-bottom:1px solid var(--border);}
   .api-label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:2px;white-space:nowrap;}
@@ -47,16 +47,16 @@
   .api-link{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--accent2);cursor:pointer;white-space:nowrap;text-decoration:underline;text-underline-offset:2px;}
   .api-link:hover{color:var(--accent);}
   .key-status{display:flex;align-items:center;gap:5px;font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);white-space:nowrap;}
-
+ 
   /* CORS BANNER */
   .cors-banner{position:relative;z-index:10;padding:7px 24px;background:rgba(255,170,0,0.07);border-bottom:1px solid rgba(255,170,0,0.22);display:none;align-items:center;gap:10px;}
   .cors-banner.show{display:flex;}
   .cors-banner span{font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--warn);flex:1;}
   .cors-banner button{background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.3);border-radius:5px;padding:4px 10px;color:var(--warn);font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;}
-
+ 
   /* LAYOUT */
   .main{flex:1;display:flex;overflow:hidden;position:relative;z-index:1;}
-
+ 
   /* SIDEBAR */
   .sidebar{width:210px;min-width:210px;border-right:1px solid var(--border);background:rgba(8,16,24,0.92);display:flex;flex-direction:column;padding:10px 0;overflow-y:auto;}
   .sidebar::-webkit-scrollbar{width:3px;}
@@ -73,13 +73,13 @@
   .model-sel option{background:#0a1520;}
   .clear-btn{margin:5px 7px;padding:8px 10px;background:transparent;border:1px solid rgba(255,68,102,0.18);border-radius:6px;color:rgba(255,68,102,0.5);font-size:11px;font-family:'Share Tech Mono',monospace;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;letter-spacing:1px;}
   .clear-btn:hover{background:rgba(255,68,102,0.07);color:var(--danger);border-color:rgba(255,68,102,0.35);}
-
+ 
   /* CHAT */
   .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   .messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;}
   .messages::-webkit-scrollbar{width:4px;}
   .messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-
+ 
   /* WELCOME */
   .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:28px;gap:12px;animation:fadeIn 0.7s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
@@ -92,7 +92,7 @@
   .chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:6px;max-width:520px;}
   .chip{padding:6px 13px;background:rgba(0,212,255,0.06);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.2s;font-family:'Share Tech Mono',monospace;}
   .chip:hover{background:rgba(0,212,255,0.14);border-color:var(--accent2);color:var(--accent);}
-
+ 
   /* MESSAGES */
   .msg{display:flex;gap:10px;animation:msgIn 0.25s ease;max-width:880px;}
   @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -107,7 +107,7 @@
   .msg.user .meta{justify-content:flex-end;}
   .m-badge{font-size:9px;font-family:'Share Tech Mono',monospace;color:var(--accent3);background:rgba(0,255,204,0.07);border:1px solid rgba(0,255,204,0.18);border-radius:4px;padding:1px 6px;}
   .m-speed{font-size:9px;font-family:'Share Tech Mono',monospace;color:rgba(0,212,255,0.5);margin-left:2px;}
-
+ 
   /* TYPING */
   .typing-wrap{display:flex;gap:10px;}
   .typing{display:flex;align-items:center;gap:5px;padding:11px 14px;background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:12px;border-top-left-radius:3px;width:fit-content;}
@@ -115,14 +115,14 @@
   .typing span:nth-child(2){animation-delay:0.2s;}
   .typing span:nth-child(3){animation-delay:0.4s;}
   @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:0.3;}30%{transform:translateY(-5px);opacity:1;}}
-
+ 
   /* FORMATTING */
   .bubble strong{color:var(--accent);font-weight:500;}
   .bubble em{color:var(--accent3);font-style:normal;}
   .bubble code{font-family:'Share Tech Mono',monospace;font-size:12px;background:rgba(0,212,255,0.08);padding:1px 5px;border-radius:3px;color:var(--accent);}
   .bubble ul,.bubble ol{padding-left:18px;margin:5px 0;}
   .bubble li{margin:3px 0;}
-
+ 
   /* INPUT */
   .input-bar{padding:12px 24px 16px;border-top:1px solid var(--border);background:rgba(5,10,15,0.97);backdrop-filter:blur(10px);}
   .input-wrap{display:flex;align-items:flex-end;gap:10px;background:rgba(0,212,255,0.04);border:1px solid var(--border2);border-radius:12px;padding:10px 12px;transition:all 0.2s;}
@@ -133,7 +133,7 @@
   .send-btn:hover{background:rgba(0,212,255,0.24);box-shadow:var(--glow);}
   .send-btn:disabled{opacity:0.25;cursor:not-allowed;}
   .hint{text-align:center;font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);margin-top:6px;letter-spacing:0.8px;}
-
+ 
   /* MODAL */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
   .overlay.show{display:flex;}
@@ -150,7 +150,7 @@
   .m-btn:hover{background:rgba(0,212,255,0.2);}
   .m-btn.sec{background:transparent;color:var(--text2);border-color:var(--border);}
   .m-btn.sec:hover{background:rgba(255,255,255,0.04);color:var(--text);}
-
+ 
   /* VOICE */
   .voice-bar{display:flex;align-items:center;gap:10px;padding:6px 24px;background:rgba(10,21,32,0.97);border-bottom:1px solid var(--border);}
   .voice-label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);letter-spacing:2px;white-space:nowrap;}
@@ -172,7 +172,7 @@
   @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,102,0.4);}50%{box-shadow:0 0 0 8px rgba(255,68,102,0);}}
   .speak-btn{background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:2px 4px;transition:color 0.2s;line-height:1;}
   .speak-btn:hover{color:var(--accent);}
-
+ 
   /* DECORATIONS */
   .corner{position:fixed;width:26px;height:26px;border-color:var(--accent);border-style:solid;opacity:0.22;z-index:5;}
   .corner.tl{top:8px;left:8px;border-width:2px 0 0 2px;}
@@ -187,7 +187,7 @@
 <div class="scanline"></div>
 <div class="corner tl"></div><div class="corner tr"></div>
 <div class="corner bl"></div><div class="corner br"></div>
-
+ 
 <!-- HEADER -->
 <header>
   <div class="logo-area">
@@ -208,7 +208,7 @@
     <div class="time-display" id="clock">--:--:--</div>
   </div>
 </header>
-
+ 
 <!-- API BAR -->
 <div class="api-bar">
   <span class="api-label">GROQ KEY</span>
@@ -220,7 +220,7 @@
     <span id="keyTxt">NO KEY</span>
   </div>
 </div>
-
+ 
 <!-- VOICE BAR -->
 <div class="voice-bar">
   <span class="voice-label">VOICE</span>
@@ -243,36 +243,22 @@
   </select>
   <button class="stop-btn" onclick="stopSpeaking()">■ STOP</button>
 </div>
-
+ 
 <!-- CORS BANNER -->
 <div class="cors-banner" id="corsBanner">
   <span>⚠️ Open via local server, not file://  —  run: python -m http.server 8080  then open localhost:8080/JARVIS.html</span>
   <button onclick="showCors()">How to fix</button>
   <button onclick="this.closest('.cors-banner').classList.remove('show')" style="opacity:0.5;margin-left:4px;">✕</button>
 </div>
-
+ 
 <!-- MAIN -->
 <div class="main">
-
+ 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="s-section">Quick Ask</div>
-    <button class="s-btn" onclick="sq('Give me a full daily briefing for today at Safecare Medical.')"><span class="ic">📋</span>Daily Briefing</button>
-    <button class="s-btn" onclick="sq('What is the attendance summary for today?')"><span class="ic">👥</span>Attendance</button>
-    <button class="s-btn" onclick="sq('Show pending procurement orders and any shortages.')"><span class="ic">📦</span>Pending Orders</button>
-    <button class="s-btn" onclick="sq('What is the sterilization status for today?')"><span class="ic">🧪</span>Sterilization</button>
-    <button class="s-btn" onclick="sq('Any urgent alerts or issues I should act on right now?')"><span class="ic">⚠️</span>Alerts</button>
-    <button class="s-btn" onclick="sq('Summarize leave requests pending my approval.')"><span class="ic">📅</span>Leave Requests</button>
-    <div class="s-div"></div>
-    <div class="s-section">Production</div>
-    <button class="s-btn" onclick="sq('What SAP document processing tasks are pending?')"><span class="ic">⚙️</span>SAP Docs</button>
-    <button class="s-btn" onclick="sq('BOM transfer status for current production batch?')"><span class="ic">🏭</span>BOM Transfer</button>
-    <button class="s-btn" onclick="sq('Summarize this week overtime hours by employee.')"><span class="ic">⏱️</span>Overtime</button>
-    <div class="s-div"></div>
-    <div class="s-section">Tamil</div>
-    <button class="s-btn" onclick="sq('இன்னைக்கு எத்தன பேர் வந்தாங்க? யாரு absent?')"><span class="ic">👤</span>Attendance?</button>
-    <button class="s-btn" onclick="sq('என்ன urgent alerts இருக்கு இன்னைக்கு?')"><span class="ic">🔔</span>Alerts இருக்கா?</button>
-    <button class="s-btn" onclick="sq('இன்னைக்கு production எப்படி போகுது?')"><span class="ic">🏗️</span>Production status?</button>
+    <div class="s-section">Apps</div>
+    <button class="s-btn" onclick="openAttendance()"><span class="ic">👥</span>Attendance</button>
+    <button class="s-btn" id="attStatusBtn" onclick="checkAttBridge()" style="font-size:11px;color:var(--text3);"><span class="ic">🔗</span><span id="attStatusLabel">Bridge: checking…</span></button>
     <div class="s-div"></div>
     <div class="s-section">Model</div>
     <select class="model-sel" id="modelSel">
@@ -291,7 +277,7 @@
     <div class="s-div"></div>
     <button class="clear-btn" onclick="clearChat()">✕ &nbsp;CLEAR CHAT</button>
   </div>
-
+ 
   <!-- CHAT -->
   <div class="chat-area">
     <div class="messages" id="messages">
@@ -311,7 +297,7 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- INPUT BAR -->
     <div class="input-bar">
       <div class="input-wrap">
@@ -333,7 +319,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- SETUP MODAL -->
 <div class="overlay" id="setupModal">
   <div class="modal">
@@ -353,7 +339,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- CORS MODAL -->
 <div class="overlay" id="corsModal">
   <div class="modal">
@@ -374,18 +360,18 @@
     </div>
   </div>
 </div>
-
+ 
 <script>
 // ===== STATE =====
 let apiKey = localStorage.getItem('jarvis_groq_key') || '';
 let history = [];
 let busy = false;
-
+ 
 // ===== SYSTEM PROMPT =====
 const SYS = `You are JARVIS — a highly intelligent, professional personal assistant for Aswin, production/manufacturing manager at Safecare Medical Industries LLC, Abu Dhabi, UAE.
-
+ 
 Personality: Precise, confident, proactive like Tony Stark's Jarvis. Warm but efficient. Address him directly, never formally.
-
+ 
 Aswin's world:
 - Attendance: TimeTrack Pro app (Firebase/Firestore), tracks present/absent/late/OT, leave approval workflow
 - Procurement: Google Sheets app, ASRS stock, BOM, pending orders (Order List 2025/2026 sheets), REF=col G, Pending Qty=col N
@@ -393,15 +379,15 @@ Aswin's world:
 - SAP: ITR/IT document pairs, BOM transfers, work orders, CAP-078 Processor
 - Apps: single-file HTML apps with Firebase. n8n on Render. WAHA WhatsApp API. Cloudflare Workers. Supabase.
 - Company: Safecare Medical Industries LLC, Abu Dhabi UAE
-
+ 
 LANGUAGE RULE — CRITICAL: Detect the language of EVERY message. Reply in the EXACT same language.
 - Tamil → proper Tamil Unicode script
 - Tanglish → natural Tanglish mix
 - English → English
 Never switch unless user does first.
-
+ 
 Style: Concise, sharp, no filler. For live data questions: acknowledge you need Firebase/Sheets access, name the exact collection/sheet to query. You ARE Jarvis — never say "I'm just an AI".`;
-
+ 
 // ===== INIT =====
 if (apiKey) {
   document.getElementById('apiKeyInput').value = apiKey;
@@ -415,11 +401,11 @@ if (window.location.protocol === 'file:') {
 setInterval(() => {
   document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US',{hour12:false});
 }, 1000);
-
+ 
 const ta = document.getElementById('userInput');
 ta.addEventListener('input', function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px'; });
 ta.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} });
-
+ 
 // ===== KEY =====
 function saveKey() {
   const v = document.getElementById('apiKeyInput').value.trim();
@@ -437,12 +423,53 @@ function setKeyUI(ok) {
   document.getElementById('keyDot').className = ok ? 'dot' : 'dot warn';
   document.getElementById('keyTxt').textContent = ok ? 'KEY ACTIVE' : 'NO KEY';
 }
-
+ 
+// ===== ATTENDANCE APP =====
+function openAttendance() {
+  window.open('TimeTrack_Pro_v133.html', '_blank');
+}
+ 
+async function checkAttBridge() {
+  const lbl = document.getElementById('attStatusLabel');
+  lbl.textContent = 'Bridge: checking…';
+  const cid = window.AttendanceBridge?.getCid?.() || '—';
+  if (!cid || cid === 'not detected') {
+    lbl.textContent = '⚠ No data (open app first)';
+    document.getElementById('attStatusBtn').style.color = 'var(--warn)';
+    addMsg('jarvis', '⚠️ **Attendance Bridge: Not Connected**\n\nNo TimeTrack Pro data found in this browser.\n\n**Fix:** Click the Attendance button to open TimeTrack Pro, log in, then click the 🔗 Bridge button again.');
+    return;
+  }
+  try {
+    const summary = await window.AttendanceBridge.getTodaySummary();
+    lbl.textContent = '✓ Bridge live';
+    document.getElementById('attStatusBtn').style.color = 'var(--accent3)';
+    addMsg('jarvis', '✅ **Attendance Bridge Connected** — Company: `' + cid + '`\n\n' + summary);
+  } catch(e) {
+    lbl.textContent = '✕ Bridge error';
+    document.getElementById('attStatusBtn').style.color = 'var(--danger)';
+    addMsg('jarvis', '⚠️ Bridge error: ' + e.message);
+  }
+}
+ 
 // ===== LANG =====
 function setLang(l) {
   ['EN','TA','MIX'].forEach(x => document.getElementById('l'+x).classList.toggle('active', x===l));
+  // Sync voice language with UI language selection
+  if (l === 'TA') {
+    document.getElementById('voiceLang').value = 'ta-IN';
+    voiceLang = 'ta-IN';
+    localStorage.setItem('jarvis_voice_lang', 'ta-IN');
+  } else if (l === 'EN') {
+    document.getElementById('voiceLang').value = 'en-US';
+    voiceLang = 'en-US';
+    localStorage.setItem('jarvis_voice_lang', 'en-US');
+  } else {
+    document.getElementById('voiceLang').value = 'auto';
+    voiceLang = 'auto';
+    localStorage.setItem('jarvis_voice_lang', 'auto');
+  }
 }
-
+ 
 // ===== MODALS =====
 function showSetup() { document.getElementById('setupModal').classList.add('show'); }
 function showCors()  { document.getElementById('corsModal').classList.add('show'); }
@@ -452,7 +479,7 @@ window.addEventListener('click', e => {
     if (e.target.id === id) closeM(id);
   });
 });
-
+ 
 // ===== CHAT =====
 function clearChat() {
   history = [];
@@ -463,9 +490,9 @@ function clearChat() {
   w.innerHTML=`<div class="w-ring">J</div><h2>SESSION CLEARED</h2><div class="free-badge">⚡ JARVIS READY</div><p>Memory reset. New session started.</p><div class="chips"><div class="chip" onclick="sq('Daily briefing.')">Daily briefing</div><div class="chip" onclick="sq('Attendance today?')">Attendance</div><div class="chip" onclick="sq('இன்னைக்கு என்ன நடக்குது?')">இன்னைக்கு?</div></div>`;
   m.appendChild(w);
 }
-
+ 
 function sq(t) { document.getElementById('userInput').value = t; send(); }
-
+ 
 function fmt(t) {
   return t
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
@@ -473,7 +500,7 @@ function fmt(t) {
     .replace(/`(.*?)`/g,'<code>$1</code>')
     .replace(/\n/g,'<br>');
 }
-
+ 
 function addMsg(role, content, ms) {
   document.getElementById('welcome')?.remove();
   const m = document.getElementById('messages');
@@ -496,7 +523,7 @@ function addMsg(role, content, ms) {
     setTimeout(() => speak(content), 300);
   }
 }
-
+ 
 function showTyping() {
   document.getElementById('welcome')?.remove();
   const m = document.getElementById('messages');
@@ -507,46 +534,46 @@ function showTyping() {
   m.scrollTop = m.scrollHeight;
 }
 function rmTyping() { document.getElementById('typing')?.remove(); }
-
+ 
 function setStatus(b) {
   document.getElementById('statusDot').className = b ? 'dot busy' : 'dot';
   document.getElementById('statusText').textContent = b ? 'THINKING...' : 'READY';
 }
-
+ 
 // ===== VOICE OUTPUT (TTS) =====
 let voiceEnabled = localStorage.getItem('jarvis_voice') === 'true';
 let voiceLang = localStorage.getItem('jarvis_voice_lang') || 'en-US';
 let speaking = false;
-
+ 
 // Init voice toggle state
 document.getElementById('voiceOn').checked = voiceEnabled;
 document.getElementById('voiceToggleLabel').textContent = voiceEnabled ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
 document.getElementById('voiceLang').value = voiceLang;
-
+ 
 function toggleVoice(on) {
   voiceEnabled = on;
   localStorage.setItem('jarvis_voice', on);
   document.getElementById('voiceToggleLabel').textContent = on ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
   if (!on) stopSpeaking();
 }
-
+ 
 function setVoiceLang() {
   voiceLang = document.getElementById('voiceLang').value;
   localStorage.setItem('jarvis_voice_lang', voiceLang);
 }
-
+ 
 function stopSpeaking() {
   window.speechSynthesis.cancel();
   speaking = false;
 }
-
+ 
 function detectLang(text) {
   // Check if text contains Tamil Unicode characters
   const tamilRange = /[\u0B80-\u0BFF]/;
   if (tamilRange.test(text)) return 'ta-IN';
   return 'en-US';
 }
-
+ 
 function stripMarkdown(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -557,46 +584,55 @@ function stripMarkdown(text) {
     .replace(/#{1,6}\s/g, '')
     .trim();
 }
-
+ 
 function speak(text) {
   if (!('speechSynthesis' in window)) return;
   stopSpeaking();
-
+ 
   const clean = stripMarkdown(text);
   if (!clean) return;
-
-  const utter = new SpeechSynthesisUtterance(clean);
-  utter.rate = parseFloat(document.getElementById('voiceRate').value);
-  utter.pitch = 1.0;
-  utter.volume = 1.0;
-
-  // Language: auto-detect or manual
-  const sel = document.getElementById('voiceLang').value;
-  utter.lang = sel === 'auto' ? detectLang(clean) : sel;
-
-  // Try to find a matching voice
+ 
+  function doSpeak(voices) {
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.rate = parseFloat(document.getElementById('voiceRate').value);
+    utter.pitch = 1.0;
+    utter.volume = 1.0;
+    const sel = document.getElementById('voiceLang').value;
+    utter.lang = sel === 'auto' ? detectLang(clean) : sel;
+    const match = voices.find(v => v.lang === utter.lang) ||
+                  voices.find(v => v.lang.startsWith(utter.lang.split('-')[0]));
+    if (match) utter.voice = match;
+    utter.onstart = () => { speaking = true; };
+    utter.onend   = () => { speaking = false; };
+    utter.onerror = () => { speaking = false; };
+    window.speechSynthesis.speak(utter);
+  }
+ 
   const voices = window.speechSynthesis.getVoices();
-  const match = voices.find(v => v.lang === utter.lang) ||
-                voices.find(v => v.lang.startsWith(utter.lang.split('-')[0]));
-  if (match) utter.voice = match;
-
-  utter.onstart = () => { speaking = true; };
-  utter.onend = () => { speaking = false; };
-  utter.onerror = () => { speaking = false; };
-
-  window.speechSynthesis.speak(utter);
+  if (voices.length > 0) {
+    doSpeak(voices);
+  } else {
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.onvoiceschanged = null;
+      doSpeak(window.speechSynthesis.getVoices());
+    };
+    setTimeout(() => {
+      const v2 = window.speechSynthesis.getVoices();
+      if (v2.length > 0) doSpeak(v2);
+    }, 500);
+  }
 }
-
+ 
 // Speak button on each message
 function speakMsg(btn) {
   const bubble = btn.closest('.msg').querySelector('.bubble');
   speak(bubble.innerText);
 }
-
+ 
 // ===== VOICE INPUT (STT) =====
 let recognition = null;
 let isListening = false;
-
+ 
 function initRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return null;
@@ -604,7 +640,7 @@ function initRecognition() {
   r.continuous = false;
   r.interimResults = false;
   r.lang = voiceLang === 'auto' ? 'en-US' : voiceLang;
-
+ 
   r.onresult = e => {
     const transcript = e.results[0][0].transcript;
     document.getElementById('userInput').value = transcript;
@@ -616,13 +652,13 @@ function initRecognition() {
   r.onend   = () => { setMicUI(false); isListening = false; };
   return r;
 }
-
+ 
 function setMicUI(on) {
   const btn = document.getElementById('micBtn');
   btn.classList.toggle('listening', on);
   btn.title = on ? 'Listening… click to stop' : 'Voice input';
 }
-
+ 
 function toggleMic() {
   if (isListening) {
     recognition?.stop();
@@ -640,35 +676,35 @@ function toggleMic() {
   setMicUI(true);
   isListening = true;
 }
-
+ 
 // Patch addMsg to add speak button + auto-speak
 const _origAddMsg = addMsg;
 // Override to inject speak button and auto-speak
-
+ 
 async function send() {
   if (busy) return;
   const inp = document.getElementById('userInput');
   const text = inp.value.trim();
   if (!text) return;
-
+ 
   if (!apiKey) { showSetup(); return; }
-
+ 
   if (window.location.protocol === 'file:') {
     if (!confirm('Running from file:// will fail due to CORS.\n\nFix: python -m http.server 8080\nThen open: http://localhost:8080/JARVIS.html\n\nContinue anyway?')) return;
   }
-
+ 
   inp.value = ''; inp.style.height = 'auto';
   addMsg('user', text);
   history.push({ role:'user', content: text });
-
+ 
   busy = true;
   document.getElementById('sendBtn').disabled = true;
   setStatus(true);
   showTyping();
-
+ 
   const model = document.getElementById('modelSel').value;
   const t0 = Date.now();
-
+ 
   try {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -687,11 +723,11 @@ async function send() {
         top_p: 0.9
       })
     });
-
+ 
     const data = await res.json();
     const ms = Date.now() - t0;
     rmTyping();
-
+ 
     if (data.error) {
       const msg = data.error.message || 'API error';
       addMsg('jarvis', `⚠️ Error: ${msg}\n\nIf key is wrong, get a new one from **console.groq.com → API Keys**`);
@@ -701,7 +737,7 @@ async function send() {
       addMsg('jarvis', reply, ms);
       history.push({ role:'assistant', content: reply });
     }
-
+ 
   } catch (err) {
     rmTyping();
     if (window.location.protocol === 'file:' || err.message?.includes('fetch')) {
@@ -712,12 +748,342 @@ async function send() {
     }
     history.pop();
   }
-
+ 
   busy = false;
   document.getElementById('sendBtn').disabled = false;
   setStatus(false);
   inp.focus();
 }
+ 
+ 
+// ═══════════════════════════════════════════════════════════
+//  ATTENDANCE BRIDGE — Live Firebase connection to TimeTrack Pro
+//  Firebase project: timetrack-pro-c5f02
+//  Same Firestore used by TimeTrack Pro v133
+// ═══════════════════════════════════════════════════════════
+(function() {
+  let _fdb = null;
+  let _empCache = null;   // array of all employee objects for the company
+  let _cid = null;        // company ID (auto-detected from localStorage)
+  let _loading = false;
+  let _ready = false;
+ 
+  // ── detect the active company ID from TimeTrack Pro localStorage ──
+  function detectCid() {
+    // Method 1: ott_session (most reliable — set after login, has companyId)
+    try {
+      const sess = JSON.parse(localStorage.getItem('ott_session') || 'null');
+      if (sess && sess.companyId) return sess.companyId;
+    } catch(e) {}
+    // Method 2: scan for ott_emps_{cid} keys (fallback)
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('ott_emps_') && !k.includes('_ts') && !k.includes('_migrated')) {
+        const cid = k.replace('ott_emps_', '');
+        if (cid) return cid;
+      }
+    }
+    return null;
+  }
+ 
+  // ── load Firebase SDK (same version as TimeTrack Pro) ──
+  function loadScript(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+ 
+  async function initFirebaseBridge() {
+    if (_fdb) return _fdb;
+    if (_loading) {
+      // wait for it
+      await new Promise(r => { const iv = setInterval(() => { if (_fdb || !_loading) { clearInterval(iv); r(); } }, 100); });
+      return _fdb;
+    }
+    _loading = true;
+    try {
+      // Firebase SDK might already be loaded by TimeTrack Pro on the same page —
+      // if not, load it ourselves (both use same compat SDK 10.12.0)
+      if (typeof firebase === 'undefined') {
+        await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js');
+      }
+      const cfg = {
+        apiKey:            "AIzaSyDk4z3o6WuDxwbCxI1orMw0Y_S7tExiI3k",
+        authDomain:        "timetrack-pro-c5f02.firebaseapp.com",
+        projectId:         "timetrack-pro-c5f02",
+        storageBucket:     "timetrack-pro-c5f02.firebasestorage.app",
+        messagingSenderId: "1029031413276",
+        appId:             "1:1029031413276:web:a17206b987b85023d601d9"
+      };
+      // Use a separate named app so we don't clash with TimeTrack Pro's app
+      const appName = 'jarvis-bridge';
+      let app;
+      try { app = firebase.app(appName); }
+      catch(e) { app = firebase.initializeApp(cfg, appName); }
+      _fdb = firebase.firestore(app);
+      _loading = false;
+      _ready = true;
+      console.log('[AttendanceBridge] Firebase connected ✓');
+    } catch(e) {
+      _loading = false;
+      console.warn('[AttendanceBridge] Firebase failed:', e);
+    }
+    return _fdb;
+  }
+ 
+  // ── fetch all employees for the company (with local cache fallback) ──
+  async function loadEmployees(forceRefresh) {
+    if (_empCache && !forceRefresh) return _empCache;
+ 
+    // 1. Try localStorage first (instant, works offline)
+    _cid = _cid || detectCid();
+    if (_cid) {
+      try {
+        const local = JSON.parse(localStorage.getItem(`ott_emps_${_cid}`) || 'null');
+        if (local && local.length > 0) {
+          _empCache = local.filter(e => !e._deleted);
+          if (!forceRefresh) return _empCache;
+        }
+      } catch(e) {}
+    }
+ 
+    // 2. Try Firebase (fresh data)
+    const db = await initFirebaseBridge();
+    if (!db || !_cid) return _empCache || [];
+ 
+    try {
+      const migrated = localStorage.getItem(`ott_emps_migrated_${_cid}`);
+      if (migrated === '1') {
+        // Per-employee docs structure
+        const idxSnap = await db.collection('emp_index').doc(_cid).get();
+        if (!idxSnap.exists) return _empCache || [];
+        const ids = idxSnap.data().ids || [];
+        const emps = [];
+        for (let i = 0; i < ids.length; i += 10) {
+          const chunk = ids.slice(i, i + 10);
+          const snaps = await Promise.all(
+            chunk.map(id => db.collection('emp_docs').doc(`${_cid}_${id}`).get())
+          );
+          snaps.forEach(snap => {
+            if (snap.exists) {
+              const d = snap.data();
+              delete d._cid; delete d._ts;
+              if (!d._deleted) emps.push(d);
+            }
+          });
+        }
+        _empCache = emps;
+      } else {
+        // Legacy single-doc structure
+        const snap = await db.collection('employees').doc(_cid).get();
+        if (snap.exists) {
+          _empCache = (snap.data().data || []).filter(e => !e._deleted);
+        }
+      }
+    } catch(e) {
+      console.warn('[AttendanceBridge] load error:', e);
+    }
+    return _empCache || [];
+  }
+ 
+  // ── date key format used by TimeTrack Pro: "YYYY-M-D" (no zero padding) ──
+  function dateKey(d) {
+    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  }
+ 
+  // ── human-readable status ──
+  const STATUS_LABEL = {
+    P:  'Present (Day)',   N:  'Present (Night)',
+    AD: 'Absent',         AN: 'Absent (Night)',
+    L:  'On Leave',       WO: 'Week Off',
+    PH: 'Public Holiday', HD: 'Half Day',
+    '': 'No Record'
+  };
+ 
+  // ════════════════════════════════════════════════════════
+  //  PUBLIC API
+  // ════════════════════════════════════════════════════════
+  window.AttendanceBridge = {
+ 
+    // ── getTodaySummary() ──────────────────────────────────
+    // Returns a plain-text summary JARVIS can inject into the chat context
+    async getTodaySummary() {
+      const emps = await loadEmployees();
+      if (!emps.length) return 'No employee data found. Make sure TimeTrack Pro has been used on this browser.';
+      const today = new Date();
+      const key   = dateKey(today);
+      const dateStr = today.toLocaleDateString('en-AE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+ 
+      const present=[], absent=[], late=[], leave=[], wo=[], ph=[], hd=[], noRecord=[];
+      emps.forEach(e => {
+        const status = (e.att && e.att[key]) ? e.att[key] : '';
+        const name = e.name || e.nm || e.id;
+        const dept = e.dept || e.department || e.plant || '';
+        const info = dept ? `${name} (${dept})` : name;
+        switch(status) {
+          case 'P': case 'N':   present.push(info); break;
+          case 'AD': case 'AN': absent.push(info);  break;
+          case 'L':             leave.push(info);   break;
+          case 'WO':            wo.push(info);      break;
+          case 'PH':            ph.push(info);      break;
+          case 'HD':            hd.push(info);      break;
+          default:              noRecord.push(info);
+        }
+      });
+ 
+      let out = `📅 ATTENDANCE SUMMARY — ${dateStr}\n`;
+      out += `Total employees: ${emps.length}\n\n`;
+      out += `✅ Present: ${present.length}\n${present.map(x=>'  • '+x).join('\n') || '  (none)'}\n\n`;
+      out += `❌ Absent: ${absent.length}\n${absent.map(x=>'  • '+x).join('\n') || '  (none)'}\n\n`;
+      if (leave.length)  out += `🏖️ On Leave: ${leave.length}\n${leave.map(x=>'  • '+x).join('\n')}\n\n`;
+      if (hd.length)     out += `⏰ Half Day: ${hd.length}\n${hd.map(x=>'  • '+x).join('\n')}\n\n`;
+      if (wo.length)     out += `🔄 Week Off: ${wo.length}\n${wo.map(x=>'  • '+x).join('\n')}\n\n`;
+      if (ph.length)     out += `🎉 Public Holiday: ${ph.length}\n${ph.map(x=>'  • '+x).join('\n')}\n\n`;
+      if (noRecord.length) out += `❓ Not marked yet: ${noRecord.length}\n${noRecord.map(x=>'  • '+x).join('\n')}\n\n`;
+      out += `Attendance rate: ${emps.length > 0 ? Math.round((present.length/emps.length)*100) : 0}%`;
+      return out;
+    },
+ 
+    // ── getDateSummary(dateStr) ── e.g. "2025-05-01" ──────
+    async getDateSummary(dateStr) {
+      const emps = await loadEmployees();
+      if (!emps.length) return 'No employee data found.';
+      // Accept YYYY-MM-DD or YYYY-M-D
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const key = `${y}-${m}-${d}`;
+      const label = new Date(y, m-1, d).toLocaleDateString('en-AE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+ 
+      const present=[], absent=[], leave=[], other=[], noRecord=[];
+      emps.forEach(e => {
+        const status = (e.att && e.att[key]) ? e.att[key] : '';
+        const name = e.name || e.nm || e.id;
+        switch(status) {
+          case 'P': case 'N': present.push(name); break;
+          case 'AD': case 'AN': absent.push(name); break;
+          case 'L': leave.push(name); break;
+          case '': noRecord.push(name); break;
+          default: other.push(`${name}:${status}`);
+        }
+      });
+ 
+      let out = `📅 ATTENDANCE — ${label}\n`;
+      out += `Present: ${present.length} | Absent: ${absent.length} | Leave: ${leave.length} | Unmarked: ${noRecord.length}\n\n`;
+      if (absent.length)   out += `Absent: ${absent.join(', ')}\n`;
+      if (leave.length)    out += `On Leave: ${leave.join(', ')}\n`;
+      if (noRecord.length) out += `Not Marked: ${noRecord.join(', ')}\n`;
+      return out;
+    },
+ 
+    // ── getMonthSummary(year, month) ── 1-indexed month ──
+    async getMonthSummary(year, month) {
+      const emps = await loadEmployees();
+      if (!emps.length) return 'No employee data found.';
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const monthName = new Date(year, month-1, 1).toLocaleDateString('en-AE', {month:'long', year:'numeric'});
+ 
+      let out = `📊 MONTHLY ATTENDANCE — ${monthName}\n\n`;
+      const rows = emps.map(e => {
+        let p=0, a=0, l=0, wo=0;
+        for (let d=1; d<=daysInMonth; d++) {
+          const key = `${year}-${month}-${d}`;
+          const s = (e.att && e.att[key]) || '';
+          if (s==='P'||s==='N') p++;
+          else if (s==='AD'||s==='AN') a++;
+          else if (s==='L') l++;
+          else if (s==='WO'||s==='PH') wo++;
+        }
+        return { name: e.name||e.nm||e.id, dept: e.dept||e.plant||'', p, a, l, wo };
+      });
+      rows.sort((a,b) => b.p - a.p);
+      rows.forEach(r => {
+        out += `${r.name}${r.dept?' ('+r.dept+')':''}: ${r.p} present, ${r.a} absent, ${r.l} leave\n`;
+      });
+      return out;
+    },
+ 
+    // ── getAbsentees(dateStr?) ── today if no arg ─────────
+    async getAbsentees(dateStr) {
+      const emps = await loadEmployees();
+      if (!emps.length) return 'No employee data found.';
+      let key;
+      if (dateStr) {
+        const [y,m,d] = dateStr.split('-').map(Number);
+        key = `${y}-${m}-${d}`;
+      } else {
+        const t = new Date(); key = dateKey(t);
+      }
+      const absent = emps.filter(e => {
+        const s = e.att && e.att[key];
+        return s === 'AD' || s === 'AN';
+      });
+      if (!absent.length) return `No absences recorded for ${key}.`;
+      return `Absent on ${key}: ${absent.map(e => e.name||e.nm||e.id).join(', ')}`;
+    },
+ 
+    // ── status ─────────────────────────────────────────────
+    isReady() { return _ready; },
+    getCid()   { return _cid || detectCid() || 'not detected'; },
+    async refresh() { _empCache = null; return loadEmployees(true); }
+  };
+ 
+  // Pre-warm: start loading Firebase + employees in background
+  (async () => {
+    _cid = detectCid();
+    await initFirebaseBridge();
+    await loadEmployees();
+    const lbl = document.getElementById('attStatusLabel');
+    const btn = document.getElementById('attStatusBtn');
+    if (lbl && btn) {
+      if (_cid && (_empCache||[]).length > 0) {
+        lbl.textContent = `✓ Bridge live (${(_empCache||[]).length} emps)`;
+        btn.style.color = 'var(--accent3)';
+      } else if (_cid) {
+        lbl.textContent = '⚠ Bridge: no employees';
+        btn.style.color = 'var(--warn)';
+      } else {
+        lbl.textContent = '⚠ Bridge: open app first';
+        btn.style.color = 'var(--text3)';
+      }
+    }
+    console.log(`[AttendanceBridge] Ready. Company: ${_cid}, Employees: ${(_empCache||[]).length}`);
+  })();
+ 
+})();
+ 
+// ═══════════════════════════════════════════════════════════
+//  ATTENDANCE-AWARE SEND — intercepts attendance questions
+//  and injects live data into the Groq prompt context
+// ═══════════════════════════════════════════════════════════
+const _origSend = send;
+ 
+// Keywords that signal an attendance query
+function isAttendanceQuery(text) {
+  const t = text.toLowerCase();
+  const tamilAtt = /வந்தாங்க|வரல|absent|attendance|ஆஜர்|வருகை/i;
+  const engAtt   = /attendance|absent|present|who came|who is in|who's in|who came today|daily head|headcount|வந்தவங்க/i;
+  return tamilAtt.test(t) || engAtt.test(t);
+}
+ 
+// Replace send() with attendance-aware version
+send = async function() {
+  const inp = document.getElementById('userInput');
+  const text = inp.value.trim();
+  if (!text || !apiKey || busy) { _origSend(); return; }
+ 
+  if (isAttendanceQuery(text)) {
+    try {
+      const summary = await window.AttendanceBridge.getTodaySummary();
+      inp.value = `[LIVE ATTENDANCE DATA FROM TIMETRACK PRO]\n${summary}\n\n[USER QUESTION]\n${text}`;
+    } catch(e) {
+      console.warn('AttendanceBridge fetch error:', e);
+    }
+  }
+  _origSend();
+};
 </script>
+ 
 </body>
 </html>
