@@ -842,7 +842,7 @@ function toggleMic() {
 const _origAddMsg = addMsg;
 // Override to inject speak button and auto-speak
 
-let send = async function() {
+window.send = async function() {
   if (busy) return;
   const inp = document.getElementById('userInput');
   const text = inp.value.trim();
@@ -1221,182 +1221,122 @@ let send = async function() {
 
 // ═══════════════════════════════════════════════════════════
 //  ATTENDANCE-AWARE SEND
-//  • 1 company  → auto-proceed
-//  • 2+ companies → chip selector every time
-//  • Session resets after 10 min conversation idle
 // ═══════════════════════════════════════════════════════════
 
-// ── Company session state ──
-let _attCo = null;          // { id, name } of selected company
-let _attCoTime = 0;         // timestamp of last attendance interaction
-const ATT_SESSION_MS = 10 * 60 * 1000;   // 10 minutes
+// ── Company session ──
+let _attCo     = null;
+let _attCoTime = 0;
+const ATT_SESSION_MS = 10 * 60 * 1000;
 
-function _attSessionValid() {
-  return _attCo && (Date.now() - _attCoTime) < ATT_SESSION_MS;
+function _attSessionValid() { return _attCo && (Date.now() - _attCoTime) < ATT_SESSION_MS; }
+function _attSetCo(co)      { _attCo = co; _attCoTime = Date.now(); _updateCoLabel(); }
+function _attBumpTime()     { if (_attCo) _attCoTime = Date.now(); }
+
+function _getCompanies() {
+  try {
+    const arr = JSON.parse(localStorage.getItem('ott_companies') || '[]');
+    return arr.filter(c => c && c.id && !c._deleted);
+  } catch(e) { return []; }
 }
-function _attSetCo(co) {
-  _attCo = co;
-  _attCoTime = Date.now();
-  _updateCoLabel();
+
+function isAttendanceQuery(t) {
+  return /attendance|absent|present|who came|headcount|வந்தாங்க|வரல|ஆஜர்|வருகை|வந்தவங்க/i.test(t);
 }
 
 function _updateCoLabel() {
   const el = document.getElementById('attCoLabel');
   const nm = document.getElementById('attCoName');
   if (!el || !nm) return;
-  if (_attCo && _attSessionValid()) {
-    nm.textContent = _attCo.name;
-    el.style.display = 'block';
-    // Show remaining time
-    const rem = Math.ceil((ATT_SESSION_MS - (Date.now() - _attCoTime)) / 60000);
-    el.title = `Session resets in ~${rem} min`;
-  } else {
-    el.style.display = 'none';
-  }
+  if (_attCo && _attSessionValid()) { nm.textContent = _attCo.name; el.style.display = 'block'; }
+  else el.style.display = 'none';
 }
 
-// Ticker: clear label when session expires
 setInterval(() => {
-  if (_attCo && !_attSessionValid()) {
-    _attCo = null;
-    _updateCoLabel();
-  } else {
-    _updateCoLabel(); // refresh tooltip countdown
-  }
+  if (_attCo && !_attSessionValid()) { _attCo = null; _updateCoLabel(); }
 }, 30000);
-function _attBumpTime() {
-  if (_attCo) _attCoTime = Date.now();
-}
 
-// ── Read all companies from localStorage ──
-function _getCompanies() {
-  try {
-    const raw = localStorage.getItem('ott_companies');
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.filter(c => c && c.id && !c._deleted) : [];
-  } catch(e) { return []; }
-}
-
-// ── Keywords that signal an attendance query ──
-function isAttendanceQuery(text) {
-  const tamilAtt = /வந்தாங்க|வரல|absent|attendance|ஆஜர்|வருகை/i;
-  const engAtt   = /attendance|absent|present|who came|who is in|who's in|who came today|headcount|வந்தவங்க/i;
-  return tamilAtt.test(text) || engAtt.test(text);
-}
-
-// ── Show company chips and wait for user click ──
-function _showCompanyPicker(companies, pendingQuestion) {
-  // Build chip row inside a jarvis message
+function _showCompanyPicker(companies, pendingQ) {
   document.getElementById('welcome')?.remove();
   const m = document.getElementById('messages');
   const d = document.createElement('div');
-  d.className = 'msg jarvis';
-  d.id = 'co-picker';
-
-  const chipsHtml = companies.map(co =>
-    `<div class="chip" style="cursor:pointer;" onclick="window._pickCo('${co.id}','${co.name.replace(/'/g,"\\'")}',this)">${co.name}</div>`
+  d.className = 'msg jarvis'; d.id = 'co-picker';
+  const chips = companies.map(co =>
+    `<div class="chip" style="cursor:pointer;padding:6px 14px;" onclick="window._pickCo('${co.id}','${co.name.replace(/'/g,"\'")}',this)">${co.name}</div>`
   ).join('');
-
   const t = new Date().toLocaleTimeString('en-US',{hour12:false});
-  d.innerHTML = `
-    <div class="avatar" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Orbitron',monospace;font-weight:700;flex-shrink:0;background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);">J</div>
-    <div>
-      <div class="bubble">Which company's attendance do you want?<br><br><div class="chips" style="justify-content:flex-start;margin-top:4px;">${chipsHtml}</div></div>
-      <div class="meta">${t}</div>
-    </div>`;
-  m.appendChild(d);
-  m.scrollTop = m.scrollHeight;
-
-  // Store pending question so _pickCo can resume it
-  window._attPendingQ = pendingQuestion;
+  d.innerHTML = `<div class="avatar" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Orbitron',monospace;font-weight:700;flex-shrink:0;background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);">J</div><div><div class="bubble">Which company?<br><br><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">${chips}</div></div><div class="meta">${t}</div></div>`;
+  m.appendChild(d); m.scrollTop = m.scrollHeight;
+  window._attPendingQ = pendingQ;
 }
 
-// ── Called when user clicks a company chip ──
-window._pickCo = async function(coId, coName, chipEl) {
-  // Disable all chips to prevent double-click
-  document.querySelectorAll('#co-picker .chip').forEach(c => {
-    c.style.opacity = '0.4'; c.style.pointerEvents = 'none';
-  });
-  chipEl.style.opacity = '1';
-  chipEl.style.border = '1px solid var(--accent)';
-  chipEl.style.color = 'var(--accent)';
-
+window._pickCo = async function(coId, coName, el) {
+  document.querySelectorAll('#co-picker .chip').forEach(c => { c.style.opacity='0.4'; c.style.pointerEvents='none'; });
+  el.style.opacity='1'; el.style.border='1px solid var(--accent)';
   _attSetCo({ id: coId, name: coName });
-  _updateCoLabel();
-
-  // Update bridge to use this company
-  if (window.AttendanceBridge && window.AttendanceBridge._setCid) {
-    window.AttendanceBridge._setCid(coId);
-  }
-
-  // Resume the original question
+  if (window.AttendanceBridge?._setCid) window.AttendanceBridge._setCid(coId);
   const q = window._attPendingQ || '';
   window._attPendingQ = null;
-
   if (q) {
-    const inp = document.getElementById('userInput');
-    inp.value = q;
-    await _runAttendanceSend(coId, q);
+    document.getElementById('userInput').value = q;
+    await _doAttSend(coId, q);
   }
 };
 
-// ── Core: fetch attendance data and fire send() ──
-async function _runAttendanceSend(coId, originalText) {
+async function _doAttSend(coId, originalText) {
   const inp = document.getElementById('userInput');
   try {
-    // Point bridge at the right company
     if (window.AttendanceBridge?._setCid) window.AttendanceBridge._setCid(coId);
     const summary = await window.AttendanceBridge.getTodaySummary();
     inp.value = `[LIVE ATTENDANCE DATA — ${_attCo?.name || coId}]\n${summary}\n\n[USER QUESTION]\n${originalText}`;
   } catch(e) {
-    console.warn('AttendanceBridge fetch error:', e);
+    console.warn('AttBridge error:', e);
     inp.value = originalText;
   }
-  _origSend();
+  send();
 }
 
-// ── Patched send() ──
-const _origSend = send;   // capture original before override
-send = async function() {
-  const inp = document.getElementById('userInput');
-  const text = inp.value.trim();
-  if (!text || busy) return;          // empty or already processing
-  if (!apiKey) { showSetup(); return; } // no key — show setup
+// ── Wrap send with attendance awareness ──
+// Use window.send so reassignment always works regardless of let/function
+window.send = (function(originalSend) {
+  return async function() {
+    const inp  = document.getElementById('userInput');
+    const text = inp.value.trim();
 
-  // Bump idle timer on any message
-  _attBumpTime();
+    // Non-attendance OR no input: always fall through to original
+    if (!text || !isAttendanceQuery(text)) {
+      return originalSend();
+    }
 
-  if (!isAttendanceQuery(text)) { _origSend(); return; }
+    _attBumpTime();
 
-  // Check session expiry
-  if (!_attSessionValid()) _attCo = null;
+    // Reset expired session
+    if (!_attSessionValid()) _attCo = null;
 
-  const companies = _getCompanies();
+    const companies = _getCompanies();
 
-  // No companies found — let Groq handle it gracefully
-  if (companies.length === 0) { _origSend(); return; }
+    // No companies in localStorage → fall through (Groq answers naturally)
+    if (!companies.length) return originalSend();
 
-  // Single company — proceed automatically
-  if (companies.length === 1) {
-    _attSetCo({ id: companies[0].id, name: companies[0].name });
-    await _runAttendanceSend(companies[0].id, text);
-    inp.value = '';
-    return;
-  }
+    // One company → auto-select
+    if (companies.length === 1) {
+      _attSetCo({ id: companies[0].id, name: companies[0].name });
+      await _doAttSend(companies[0].id, text);
+      return;
+    }
 
-  // Multiple companies AND valid session → use remembered company
-  if (_attSessionValid()) {
-    await _runAttendanceSend(_attCo.id, text);
-    inp.value = '';
-    return;
-  }
+    // Session still valid → reuse
+    if (_attSessionValid()) {
+      await _doAttSend(_attCo.id, text);
+      return;
+    }
 
-  // Multiple companies, no session → ask
-  addMsg('user', text);
-  inp.value = ''; inp.style.height = 'auto';
-  _showCompanyPicker(companies, text);
-};
+    // Multiple companies → ask
+    addMsg('user', text);
+    inp.value = ''; inp.style.height = 'auto';
+    _showCompanyPicker(companies, text);
+  };
+})(send);
+
 </script>
 
 </body>
