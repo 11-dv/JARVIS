@@ -842,7 +842,7 @@ function toggleMic() {
 const _origAddMsg = addMsg;
 // Override to inject speak button and auto-speak
 
-async function send() {
+let send = async function() {
   if (busy) return;
   const inp = document.getElementById('userInput');
   const text = inp.value.trim();
