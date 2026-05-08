@@ -842,12 +842,14 @@ function toggleMic() {
 const _origAddMsg = addMsg;
 // Override to inject speak button and auto-speak
 
-window.send = async function() {
+window.send = send = async function() {
+  console.log('[JARVIS] send() called, busy=', busy);
   if (busy) return;
   const inp = document.getElementById('userInput');
   const text = inp.value.trim();
+  console.log('[JARVIS] text=', JSON.stringify(text));
   if (!text) return;
-
+  console.log('[JARVIS] apiKey present=', !!apiKey);
   if (!apiKey) { showSetup(); return; }
 
   if (window.location.protocol === 'file:') {
@@ -1292,51 +1294,57 @@ async function _doAttSend(coId, originalText) {
     console.warn('AttBridge error:', e);
     inp.value = originalText;
   }
-  send();
+  window._originalSend(); // bypass wrapper, call original
 }
 
-// ── Wrap send with attendance awareness ──
-// Use window.send so reassignment always works regardless of let/function
-window.send = (function(originalSend) {
-  return async function() {
-    const inp  = document.getElementById('userInput');
-    const text = inp.value.trim();
+// ── Attendance-aware send wrapper ──
+window._originalSend = window.send;
 
-    // Non-attendance OR no input: always fall through to original
-    if (!text || !isAttendanceQuery(text)) {
-      return originalSend();
-    }
+// Expose as both window.send AND global send for onclick compatibility
+window.send = send = async function() {
+  const inp  = document.getElementById('userInput');
+  const text = inp.value.trim();
 
-    _attBumpTime();
+  // Not attendance or empty → call original directly
+  if (!text || !isAttendanceQuery(text)) {
+    return window._originalSend();
+  }
 
-    // Reset expired session
-    if (!_attSessionValid()) _attCo = null;
+  _attBumpTime();
+  if (!_attSessionValid()) _attCo = null;
 
-    const companies = _getCompanies();
+  const companies = _getCompanies();
 
-    // No companies in localStorage → fall through (Groq answers naturally)
-    if (!companies.length) return originalSend();
+  // No companies → original handles it
+  if (!companies.length) return window._originalSend();
 
-    // One company → auto-select
-    if (companies.length === 1) {
-      _attSetCo({ id: companies[0].id, name: companies[0].name });
-      await _doAttSend(companies[0].id, text);
-      return;
-    }
+  // One company → auto-select and send
+  if (companies.length === 1) {
+    _attSetCo({ id: companies[0].id, name: companies[0].name });
+    await _doAttSend(companies[0].id, text);
+    return;
+  }
 
-    // Session still valid → reuse
-    if (_attSessionValid()) {
-      await _doAttSend(_attCo.id, text);
-      return;
-    }
+  // Valid session → reuse selected company
+  if (_attSessionValid()) {
+    await _doAttSend(_attCo.id, text);
+    return;
+  }
 
-    // Multiple companies → ask
-    addMsg('user', text);
-    inp.value = ''; inp.style.height = 'auto';
-    _showCompanyPicker(companies, text);
-  };
-})(send);
+  // Multiple companies, no session → show picker
+  addMsg('user', text);
+  inp.value = ''; inp.style.height = 'auto';
+  _showCompanyPicker(companies, text);
+};
 
+// Global error catcher — shows any JS crash visibly in chat
+window.onerror = function(msg, src, line, col, err) {
+  console.error('JARVIS JS Error:', msg, 'line:', line);
+  try {
+    addMsg('jarvis', `⚠️ **JS Error (line ${line}):** ${msg}\n\nPlease screenshot this and report.`);
+  } catch(e) {}
+  return false;
+};
 </script>
 
 </body>
