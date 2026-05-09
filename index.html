@@ -543,18 +543,27 @@ async function speak(text){
   const clean=stripMd(text); if(!clean)return;
   const selLang=document.getElementById('voiceLang').value;
   // Resolve voice key: auto = detect base lang + use last gender pref
-  let voiceKey;
+  let voiceKey, lang;
+  const genderPref=localStorage.getItem('nova_gender_pref')||'F';
+
   if(selLang==='auto'){
-    const baseLang=detectLang(clean); // 'ta-IN','ml-IN','en-IN'
-    const genderPref=localStorage.getItem('nova_gender_pref')||'F';
-    voiceKey=baseLang+'-'+genderPref;
+    lang=detectLang(clean);                // 'ta-IN','ml-IN','en-IN'
+    voiceKey=lang+'-'+genderPref;          // 'ta-IN-F'
+  } else if(selLang.endsWith('-F')||selLang.endsWith('-M')){
+    voiceKey=selLang;                      // 'ta-IN-F' new format
+    lang=selLang.substring(0,selLang.length-2); // 'ta-IN'
+    localStorage.setItem('nova_gender_pref',selLang.slice(-1));
   } else {
-    voiceKey=selLang; // already 'ta-IN-F' etc
-    // Save gender pref from manual selection
-    const gSuffix=selLang.slice(-1); // 'F' or 'M'
-    if(gSuffix==='F'||gSuffix==='M') localStorage.setItem('nova_gender_pref',gSuffix);
+    // Old format like 'ta-IN','en-IN' — append gender pref
+    lang=selLang;
+    voiceKey=selLang+'-'+genderPref;
   }
-  const lang=voiceKey.slice(0,-2); // strip -F/-M for utterance lang code e.g. 'ta-IN'
+
+  // Validate voiceKey exists, fallback to en-IN-F
+  if(!GCLOUD_VOICES[voiceKey]) voiceKey='en-IN-'+genderPref;
+  if(!GCLOUD_VOICES[voiceKey]) voiceKey='en-IN-F';
+
+  console.log('[NOVA TTS] voiceKey='+voiceKey+' lang='+lang);
   document.getElementById('novaOrb').classList.add('speaking');
   if(ttsKey){
     try{
@@ -593,6 +602,9 @@ function setVoiceLang(){
   localStorage.setItem('nova_voice_lang',voiceLang);
   const g=voiceLang.slice(-1);
   if(g==='F'||g==='M') localStorage.setItem('nova_gender_pref',g);
+  // Update STT mic lang to match
+  const baseLang=(voiceLang==='auto')?'en-IN':(voiceLang.endsWith('-F')||voiceLang.endsWith('-M'))?voiceLang.substring(0,voiceLang.length-2):voiceLang;
+  if(recognition) recognition.lang=baseLang;
 }
 function listVoices(){
   if(ttsKey){addMsg('jarvis','✅ **Google Cloud TTS active**\n\n• Tamil → `ta-IN-Wavenet-A` (Female)\n• Malayalam → `ml-IN-Wavenet-A` (Female)\n• English → `en-IN-Wavenet-A` (Female, Indian accent)');return;}
