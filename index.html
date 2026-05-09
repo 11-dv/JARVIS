@@ -265,11 +265,6 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <div class="s-section">Apps</div>
-    <button class="s-btn" onclick="openAttendance()"><span class="ic">👥</span>Attendance</button>
-    <button class="s-btn" id="attStatusBtn" onclick="checkAttBridge()" style="font-size:11px;color:var(--text3);"><span class="ic">🔗</span><span id="attStatusLabel">Bridge: checking…</span></button>
-    <div id="attCoLabel" style="font-size:10px;color:var(--text3);padding:2px 12px 4px 36px;display:none;">Company: <span id="attCoName" style="color:var(--accent3);">—</span></div>
-    <div class="s-div"></div>
     <div class="s-section">Model</div>
     <select class="model-sel" id="modelSel">
       <option value="llama-3.3-70b-versatile">Llama 3.3 70B (best)</option>
@@ -295,15 +290,13 @@
       <div class="welcome" id="welcome">
         <div class="w-ring">J</div>
         <h2>JARVIS ONLINE</h2>
-        <div class="free-badge">⚡ FREE · Groq · 14,400 req/day · Ultra fast</div>
-        <p>Get your free Groq API key in 30 seconds — no credit card, no billing setup. Just sign up and paste the key above.</p>
+        <p>Your intelligent assistant. Ask me anything — write, analyse, explain, translate, code, or just chat. Free via Groq.</p>
         <div class="chips">
-          <div class="chip" onclick="sq('Give me a daily briefing.')">Daily briefing</div>
-          <div class="chip" onclick="sq('Attendance summary today?')">Attendance today</div>
-          <div class="chip" onclick="sq('Any pending orders or shortages?')">Pending orders</div>
-          <div class="chip" onclick="sq('இன்னைக்கு எந்த alerts இருக்கு?')">இன்னைக்கு alerts?</div>
-          <div class="chip" onclick="sq('Sterilization status today?')">Sterilization</div>
-          <div class="chip" onclick="sq('Who is absent today?')">Who is absent?</div>
+          <div class="chip" onclick="sq('Summarise the key events of this week.')">Weekly summary</div>
+          <div class="chip" onclick="sq('Help me write a professional email.')">Write email</div>
+          <div class="chip" onclick="sq('Explain a concept to me simply.')">Explain anything</div>
+          <div class="chip" onclick="sq('ஒரு கவிதை எழுது.')">தமிழில் பேசு</div>
+          <div class="chip" onclick="sq('ഒരു കവിത എഴുതൂ.')">മലയാളം</div>
           <div class="chip" onclick="showSetup()">🔑 Get free key</div>
         </div>
       </div>
@@ -312,7 +305,7 @@
     <!-- INPUT BAR -->
     <div class="input-bar">
       <div class="input-wrap">
-        <textarea id="userInput" rows="1" placeholder="Ask Jarvis anything… English, Tamil, or Tanglish freely"></textarea>
+        <textarea id="userInput" rows="1" placeholder="Ask me anything — English, தமிழ், മലയാളം or mix freely…"></textarea>
         <button class="send-btn" id="sendBtn" onclick="send()">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
             <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -379,17 +372,11 @@ let history = [];
 let busy = false;
 
 // ===== SYSTEM PROMPT =====
-const SYS = `You are JARVIS — a highly intelligent, professional personal assistant for Aswin, production/manufacturing manager at Safecare Medical Industries LLC, Abu Dhabi, UAE.
+const SYS = `You are JARVIS — a highly intelligent personal assistant. You are helpful, honest, and direct. Like Claude from Anthropic — thoughtful, nuanced, and genuinely useful.
 
-Personality: Precise, confident, proactive like Tony Stark's Jarvis. Warm but efficient. Address him directly, never formally.
+Personality: Warm but precise. Confident without being arrogant. Proactive — anticipate what the user actually needs, not just what they literally asked.
 
-Aswin's world:
-- Attendance: TimeTrack Pro app (Firebase/Firestore), tracks present/absent/late/OT, leave approval workflow
-- Procurement: Google Sheets app, ASRS stock, BOM, pending orders (Order List 2025/2026 sheets), REF=col G, Pending Qty=col N
-- Sterilization: Google Sheets "PRODUCTION ACTIVITY STERLIZATION SHEET 2026", A=Sr.No B=Batch C=Date J=CRTN O=DOC_ID
-- SAP: ITR/IT document pairs, BOM transfers, work orders, CAP-078 Processor
-- Apps: single-file HTML apps with Firebase. n8n on Render. WAHA WhatsApp API. Cloudflare Workers. Supabase.
-- Company: Safecare Medical Industries LLC, Abu Dhabi UAE
+Capabilities: Writing, analysis, coding, research, math, creative work, translation, summarisation, brainstorming, and general knowledge. You handle complex tasks and explain things clearly at any level.
 
 LANGUAGE RULE — CRITICAL: Detect the language of EVERY user message. Reply in the EXACT same language and script.
 - Tamil Unicode script → reply fully in Tamil Unicode (so TTS can read it aloud)
@@ -400,7 +387,7 @@ LANGUAGE RULE — CRITICAL: Detect the language of EVERY user message. Reply in 
 NEVER mix scripts. NEVER switch language unless the user switches first.
 TTS will read your reply aloud — so use proper Unicode script for Tamil and Malayalam, not transliteration.
 
-Style: Concise, sharp, no filler. For live data questions: acknowledge you need Firebase/Sheets access, name the exact collection/sheet to query. You ARE Jarvis — never say "I'm just an AI".`;
+Style: Concise and sharp — no filler, no unnecessary disclaimers. Be direct. Never say "I'm just an AI" — you are JARVIS.`;
 
 // ===== INIT =====
 if (apiKey) {
@@ -436,34 +423,6 @@ function saveKey() {
 function setKeyUI(ok) {
   document.getElementById('keyDot').className = ok ? 'dot' : 'dot warn';
   document.getElementById('keyTxt').textContent = ok ? 'KEY ACTIVE' : 'NO KEY';
-}
-
-// ===== ATTENDANCE APP =====
-function openAttendance() {
-  window.open('TimeTrack_Pro_v133.html', '_blank');
-}
-
-async function checkAttBridge() {
-  const lbl = document.getElementById('attStatusLabel');
-  lbl.textContent = 'Bridge: checking…';
-  const cid = window.AttendanceBridge?.getCid?.() || '—';
-  if (!cid || cid === 'not detected') {
-    lbl.textContent = '⚠ No data (open app first)';
-    document.getElementById('attStatusBtn').style.color = 'var(--warn)';
-    addMsg('jarvis', '⚠️ **Attendance Bridge: Not Connected**\n\nNo TimeTrack Pro data found in this browser.\n\n**Fix:** Click the Attendance button to open TimeTrack Pro, log in, then click the 🔗 Bridge button again.');
-    return;
-  }
-  try {
-    const summary = await window.AttendanceBridge.getTodaySummary();
-    lbl.textContent = '✓ Bridge live';
-    document.getElementById('attStatusBtn').style.color = 'var(--accent3)';
-    const coLine = _attCo ? `\n\n**Active company:** ${_attCo.name}` : '';
-    addMsg('jarvis', '✅ **Attendance Bridge Connected** — Company: `' + cid + '`' + coLine + '\n\n' + summary);
-  } catch(e) {
-    lbl.textContent = '✕ Bridge error';
-    document.getElementById('attStatusBtn').style.color = 'var(--danger)';
-    addMsg('jarvis', '⚠️ Bridge error: ' + e.message);
-  }
 }
 
 // ===== LANG =====
@@ -916,385 +875,7 @@ async function send() {
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  ATTENDANCE BRIDGE — Live Firebase connection to TimeTrack Pro
-//  Firebase project: timetrack-pro-c5f02
-//  Same Firestore used by TimeTrack Pro v133
-// ═══════════════════════════════════════════════════════════
-(function() {
-  let _fdb = null;
-  let _empCache = null;   // array of all employee objects for the company
-  let _cid = null;        // company ID (auto-detected from localStorage)
-  let _loading = false;
-  let _ready = false;
 
-  // ── detect the active company ID from TimeTrack Pro localStorage ──
-  function detectCid() {
-    // Method 1: ott_session (most reliable — set after login, has companyId)
-    try {
-      const sess = JSON.parse(localStorage.getItem('ott_session') || 'null');
-      if (sess && sess.companyId) return sess.companyId;
-    } catch(e) {}
-    // Method 2: scan for ott_emps_{cid} keys (fallback)
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith('ott_emps_') && !k.includes('_ts') && !k.includes('_migrated')) {
-        const cid = k.replace('ott_emps_', '');
-        if (cid) return cid;
-      }
-    }
-    return null;
-  }
-
-  // ── load Firebase SDK (same version as TimeTrack Pro) ──
-  function loadScript(src) {
-    return new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = src; s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-
-  async function initFirebaseBridge() {
-    if (_fdb) return _fdb;
-    if (_loading) {
-      // wait for it
-      await new Promise(r => { const iv = setInterval(() => { if (_fdb || !_loading) { clearInterval(iv); r(); } }, 100); });
-      return _fdb;
-    }
-    _loading = true;
-    try {
-      // Firebase SDK might already be loaded by TimeTrack Pro on the same page —
-      // if not, load it ourselves (both use same compat SDK 10.12.0)
-      if (typeof firebase === 'undefined') {
-        await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
-        await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js');
-      }
-      const cfg = {
-        apiKey:            "AIzaSyDk4z3o6WuDxwbCxI1orMw0Y_S7tExiI3k",
-        authDomain:        "timetrack-pro-c5f02.firebaseapp.com",
-        projectId:         "timetrack-pro-c5f02",
-        storageBucket:     "timetrack-pro-c5f02.firebasestorage.app",
-        messagingSenderId: "1029031413276",
-        appId:             "1:1029031413276:web:a17206b987b85023d601d9"
-      };
-      // Use a separate named app so we don't clash with TimeTrack Pro's app
-      const appName = 'jarvis-bridge';
-      let app;
-      try { app = firebase.app(appName); }
-      catch(e) { app = firebase.initializeApp(cfg, appName); }
-      _fdb = firebase.firestore(app);
-      _loading = false;
-      _ready = true;
-      console.log('[AttendanceBridge] Firebase connected ✓');
-    } catch(e) {
-      _loading = false;
-      console.warn('[AttendanceBridge] Firebase failed:', e);
-    }
-    return _fdb;
-  }
-
-  // ── fetch all employees for the company (with local cache fallback) ──
-  async function loadEmployees(forceRefresh) {
-    if (_empCache && !forceRefresh) return _empCache;
-
-    // 1. Try localStorage first (instant, works offline)
-    _cid = _cid || detectCid();
-    if (_cid) {
-      try {
-        const local = JSON.parse(localStorage.getItem(`ott_emps_${_cid}`) || 'null');
-        if (local && local.length > 0) {
-          _empCache = local.filter(e => !e._deleted);
-          if (!forceRefresh) return _empCache;
-        }
-      } catch(e) {}
-    }
-
-    // 2. Try Firebase (fresh data)
-    const db = await initFirebaseBridge();
-    if (!db || !_cid) return _empCache || [];
-
-    try {
-      const migrated = localStorage.getItem(`ott_emps_migrated_${_cid}`);
-      if (migrated === '1') {
-        // Per-employee docs structure
-        const idxSnap = await db.collection('emp_index').doc(_cid).get();
-        if (!idxSnap.exists) return _empCache || [];
-        const ids = idxSnap.data().ids || [];
-        const emps = [];
-        for (let i = 0; i < ids.length; i += 10) {
-          const chunk = ids.slice(i, i + 10);
-          const snaps = await Promise.all(
-            chunk.map(id => db.collection('emp_docs').doc(`${_cid}_${id}`).get())
-          );
-          snaps.forEach(snap => {
-            if (snap.exists) {
-              const d = snap.data();
-              delete d._cid; delete d._ts;
-              if (!d._deleted) emps.push(d);
-            }
-          });
-        }
-        _empCache = emps;
-      } else {
-        // Legacy single-doc structure
-        const snap = await db.collection('employees').doc(_cid).get();
-        if (snap.exists) {
-          _empCache = (snap.data().data || []).filter(e => !e._deleted);
-        }
-      }
-    } catch(e) {
-      console.warn('[AttendanceBridge] load error:', e);
-    }
-    return _empCache || [];
-  }
-
-  // ── date key format used by TimeTrack Pro: "YYYY-M-D" (no zero padding) ──
-  function dateKey(d) {
-    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-  }
-
-  // ── human-readable status ──
-  const STATUS_LABEL = {
-    P:  'Present (Day)',   N:  'Present (Night)',
-    AD: 'Absent',         AN: 'Absent (Night)',
-    L:  'On Leave',       WO: 'Week Off',
-    PH: 'Public Holiday', HD: 'Half Day',
-    '': 'No Record'
-  };
-
-  // ════════════════════════════════════════════════════════
-  //  PUBLIC API
-  // ════════════════════════════════════════════════════════
-  window.AttendanceBridge = {
-
-    // ── getTodaySummary() ──────────────────────────────────
-    // Returns a plain-text summary JARVIS can inject into the chat context
-    async getTodaySummary() {
-      const emps = await loadEmployees();
-      if (!emps.length) return 'No employee data found. Make sure TimeTrack Pro has been used on this browser.';
-      const today = new Date();
-      const key   = dateKey(today);
-      const dateStr = today.toLocaleDateString('en-AE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-      const present=[], absent=[], late=[], leave=[], wo=[], ph=[], hd=[], noRecord=[];
-      emps.forEach(e => {
-        const status = (e.att && e.att[key]) ? e.att[key] : '';
-        const name = e.name || e.nm || e.id;
-        const dept = e.dept || e.department || e.plant || '';
-        const info = dept ? `${name} (${dept})` : name;
-        switch(status) {
-          case 'P': case 'N':   present.push(info); break;
-          case 'AD': case 'AN': absent.push(info);  break;
-          case 'L':             leave.push(info);   break;
-          case 'WO':            wo.push(info);      break;
-          case 'PH':            ph.push(info);      break;
-          case 'HD':            hd.push(info);      break;
-          default:              noRecord.push(info);
-        }
-      });
-
-      let out = `📅 ATTENDANCE SUMMARY — ${dateStr}\n`;
-      out += `Total employees: ${emps.length}\n\n`;
-      out += `✅ Present: ${present.length}\n${present.map(x=>'  • '+x).join('\n') || '  (none)'}\n\n`;
-      out += `❌ Absent: ${absent.length}\n${absent.map(x=>'  • '+x).join('\n') || '  (none)'}\n\n`;
-      if (leave.length)  out += `🏖️ On Leave: ${leave.length}\n${leave.map(x=>'  • '+x).join('\n')}\n\n`;
-      if (hd.length)     out += `⏰ Half Day: ${hd.length}\n${hd.map(x=>'  • '+x).join('\n')}\n\n`;
-      if (wo.length)     out += `🔄 Week Off: ${wo.length}\n${wo.map(x=>'  • '+x).join('\n')}\n\n`;
-      if (ph.length)     out += `🎉 Public Holiday: ${ph.length}\n${ph.map(x=>'  • '+x).join('\n')}\n\n`;
-      if (noRecord.length) out += `❓ Not marked yet: ${noRecord.length}\n${noRecord.map(x=>'  • '+x).join('\n')}\n\n`;
-      out += `Attendance rate: ${emps.length > 0 ? Math.round((present.length/emps.length)*100) : 0}%`;
-      return out;
-    },
-
-    // ── getDateSummary(dateStr) ── e.g. "2025-05-01" ──────
-    async getDateSummary(dateStr) {
-      const emps = await loadEmployees();
-      if (!emps.length) return 'No employee data found.';
-      // Accept YYYY-MM-DD or YYYY-M-D
-      const [y, m, d] = dateStr.split('-').map(Number);
-      const key = `${y}-${m}-${d}`;
-      const label = new Date(y, m-1, d).toLocaleDateString('en-AE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-      const present=[], absent=[], leave=[], other=[], noRecord=[];
-      emps.forEach(e => {
-        const status = (e.att && e.att[key]) ? e.att[key] : '';
-        const name = e.name || e.nm || e.id;
-        switch(status) {
-          case 'P': case 'N': present.push(name); break;
-          case 'AD': case 'AN': absent.push(name); break;
-          case 'L': leave.push(name); break;
-          case '': noRecord.push(name); break;
-          default: other.push(`${name}:${status}`);
-        }
-      });
-
-      let out = `📅 ATTENDANCE — ${label}\n`;
-      out += `Present: ${present.length} | Absent: ${absent.length} | Leave: ${leave.length} | Unmarked: ${noRecord.length}\n\n`;
-      if (absent.length)   out += `Absent: ${absent.join(', ')}\n`;
-      if (leave.length)    out += `On Leave: ${leave.join(', ')}\n`;
-      if (noRecord.length) out += `Not Marked: ${noRecord.join(', ')}\n`;
-      return out;
-    },
-
-    // ── getMonthSummary(year, month) ── 1-indexed month ──
-    async getMonthSummary(year, month) {
-      const emps = await loadEmployees();
-      if (!emps.length) return 'No employee data found.';
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const monthName = new Date(year, month-1, 1).toLocaleDateString('en-AE', {month:'long', year:'numeric'});
-
-      let out = `📊 MONTHLY ATTENDANCE — ${monthName}\n\n`;
-      const rows = emps.map(e => {
-        let p=0, a=0, l=0, wo=0;
-        for (let d=1; d<=daysInMonth; d++) {
-          const key = `${year}-${month}-${d}`;
-          const s = (e.att && e.att[key]) || '';
-          if (s==='P'||s==='N') p++;
-          else if (s==='AD'||s==='AN') a++;
-          else if (s==='L') l++;
-          else if (s==='WO'||s==='PH') wo++;
-        }
-        return { name: e.name||e.nm||e.id, dept: e.dept||e.plant||'', p, a, l, wo };
-      });
-      rows.sort((a,b) => b.p - a.p);
-      rows.forEach(r => {
-        out += `${r.name}${r.dept?' ('+r.dept+')':''}: ${r.p} present, ${r.a} absent, ${r.l} leave\n`;
-      });
-      return out;
-    },
-
-    // ── getAbsentees(dateStr?) ── today if no arg ─────────
-    async getAbsentees(dateStr) {
-      const emps = await loadEmployees();
-      if (!emps.length) return 'No employee data found.';
-      let key;
-      if (dateStr) {
-        const [y,m,d] = dateStr.split('-').map(Number);
-        key = `${y}-${m}-${d}`;
-      } else {
-        const t = new Date(); key = dateKey(t);
-      }
-      const absent = emps.filter(e => {
-        const s = e.att && e.att[key];
-        return s === 'AD' || s === 'AN';
-      });
-      if (!absent.length) return `No absences recorded for ${key}.`;
-      return `Absent on ${key}: ${absent.map(e => e.name||e.nm||e.id).join(', ')}`;
-    },
-
-    // ── status ─────────────────────────────────────────────
-    isReady() { return _ready; },
-    getCid()   { return _cid || detectCid() || 'not detected'; },
-    _setCid(newCid) {
-      _cid = newCid;
-      _empCache = null;
-      _loading  = false;
-    },
-    async refresh() { _empCache = null; return loadEmployees(true); }
-  };
-
-  // Pre-warm: start loading Firebase + employees in background
-  (async () => {
-    _cid = detectCid();
-    await initFirebaseBridge();
-    await loadEmployees();
-    const lbl = document.getElementById('attStatusLabel');
-    const btn = document.getElementById('attStatusBtn');
-    if (lbl && btn) {
-      if (_cid && (_empCache||[]).length > 0) {
-        lbl.textContent = `✓ Bridge live (${(_empCache||[]).length} emps)`;
-        btn.style.color = 'var(--accent3)';
-      } else if (_cid) {
-        lbl.textContent = '⚠ Bridge: no employees';
-        btn.style.color = 'var(--warn)';
-      } else {
-        lbl.textContent = '⚠ Bridge: open app first';
-        btn.style.color = 'var(--text3)';
-      }
-    }
-    console.log(`[AttendanceBridge] Ready. Company: ${_cid}, Employees: ${(_empCache||[]).length}`);
-  })();
-
-})();
-
-// ═══════════════════════════════════════════════════════════
-//  ATTENDANCE-AWARE SEND
-// ═══════════════════════════════════════════════════════════
-
-// ── Company session ──
-let _attCo     = null;
-let _attCoTime = 0;
-const ATT_SESSION_MS = 10 * 60 * 1000;
-
-function _attSessionValid() { return _attCo && (Date.now() - _attCoTime) < ATT_SESSION_MS; }
-function _attSetCo(co)      { _attCo = co; _attCoTime = Date.now(); _updateCoLabel(); }
-function _attBumpTime()     { if (_attCo) _attCoTime = Date.now(); }
-
-function _getCompanies() {
-  try {
-    const arr = JSON.parse(localStorage.getItem('ott_companies') || '[]');
-    return arr.filter(c => c && c.id && !c._deleted);
-  } catch(e) { return []; }
-}
-
-function isAttendanceQuery(t) {
-  return /attendance|absent|present|who came|headcount|வந்தாங்க|வரல|ஆஜர்|வருகை|வந்தவங்க/i.test(t);
-}
-
-function _updateCoLabel() {
-  const el = document.getElementById('attCoLabel');
-  const nm = document.getElementById('attCoName');
-  if (!el || !nm) return;
-  if (_attCo && _attSessionValid()) { nm.textContent = _attCo.name; el.style.display = 'block'; }
-  else el.style.display = 'none';
-}
-
-setInterval(() => {
-  if (_attCo && !_attSessionValid()) { _attCo = null; _updateCoLabel(); }
-}, 30000);
-
-function _showCompanyPicker(companies, pendingQ) {
-  document.getElementById('welcome')?.remove();
-  const m = document.getElementById('messages');
-  const d = document.createElement('div');
-  d.className = 'msg jarvis'; d.id = 'co-picker';
-  const chips = companies.map(co =>
-    `<div class="chip" style="cursor:pointer;padding:6px 14px;" onclick="window._pickCo('${co.id}','${co.name.replace(/'/g,"\'")}',this)">${co.name}</div>`
-  ).join('');
-  const t = new Date().toLocaleTimeString('en-US',{hour12:false});
-  d.innerHTML = `<div class="avatar" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Orbitron',monospace;font-weight:700;flex-shrink:0;background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);">J</div><div><div class="bubble">Which company?<br><br><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">${chips}</div></div><div class="meta">${t}</div></div>`;
-  m.appendChild(d); m.scrollTop = m.scrollHeight;
-  window._attPendingQ = pendingQ;
-}
-
-window._pickCo = async function(coId, coName, el) {
-  document.querySelectorAll('#co-picker .chip').forEach(c => { c.style.opacity='0.4'; c.style.pointerEvents='none'; });
-  el.style.opacity='1'; el.style.border='1px solid var(--accent)';
-  _attSetCo({ id: coId, name: coName });
-  if (window.AttendanceBridge?._setCid) window.AttendanceBridge._setCid(coId);
-  const q = window._attPendingQ || '';
-  window._attPendingQ = null;
-  if (q) {
-    document.getElementById('userInput').value = q;
-    await _doAttSend(coId, q);
-  }
-};
-
-async function _doAttSend(coId, originalText) {
-  const inp = document.getElementById('userInput');
-  try {
-    if (window.AttendanceBridge?._setCid) window.AttendanceBridge._setCid(coId);
-    const summary = await window.AttendanceBridge.getTodaySummary();
-    inp.value = `[LIVE ATTENDANCE DATA — ${_attCo?.name || coId}]\n${summary}\n\n[USER QUESTION]\n${originalText}`;
-  } catch(e) {
-    console.warn('AttBridge error:', e);
-    inp.value = originalText;
-  }
-  send(); // call send directly
-}
-
-// ── Attendance-aware send wrapper ──
 // Global error catcher — shows any JS crash visibly in chat
 window.onerror = function(msg, src, line, col, err) {
   console.error('JARVIS JS Error:', msg, 'line:', line);
