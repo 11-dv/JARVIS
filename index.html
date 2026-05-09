@@ -3,274 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JARVIS — Personal Assistant</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<title>NOVA — Personal Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#050a0f;--bg2:#0a1520;
-    --accent:#00d4ff;--accent2:#0088cc;--accent3:#00ffcc;
-    --danger:#ff4466;--warn:#ffaa00;
-    --text:#c8e8f8;--text2:#6a9ab8;--text3:#3a6a8a;
-    --border:rgba(0,212,255,0.15);--border2:rgba(0,212,255,0.3);
-    --glow:0 0 20px rgba(0,212,255,0.3);--glow2:0 0 40px rgba(0,212,255,0.15);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-  body::after{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(0,136,204,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
-
-  /* HEADER */
-  header{position:relative;z-index:10;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(5,10,15,0.97);backdrop-filter:blur(10px);}
-  .logo-area{display:flex;align-items:center;gap:12px;}
-  .jarvis-ring{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;position:relative;animation:ringPulse 3s ease-in-out infinite;}
-  .jarvis-ring::before{content:'';position:absolute;width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,212,255,0.3);animation:ringPulse 3s ease-in-out infinite 0.6s;}
-  @keyframes ringPulse{0%,100%{box-shadow:0 0 10px rgba(0,212,255,0.3);}50%{box-shadow:0 0 28px rgba(0,212,255,0.65),0 0 55px rgba(0,212,255,0.2);}}
-  .logo-text h1{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;letter-spacing:6px;color:var(--accent);text-shadow:0 0 20px rgba(0,212,255,0.5);}
-  .logo-text p{font-size:10px;letter-spacing:2px;color:var(--text2);font-family:'Share Tech Mono',monospace;}
-  .header-right{display:flex;align-items:center;gap:16px;}
-  .status-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:1px;}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent3);box-shadow:0 0 8px var(--accent3);animation:blink 2s ease-in-out infinite;}
-  .dot.warn{background:var(--warn);box-shadow:0 0 8px var(--warn);}
-  .dot.busy{background:var(--accent);box-shadow:0 0 8px var(--accent);animation:blink 0.6s ease-in-out infinite;}
-  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-  .time-display{font-family:'Orbitron',monospace;font-size:13px;color:var(--accent);letter-spacing:2px;opacity:0.8;}
-  .speed-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--accent3);background:rgba(0,255,204,0.08);border:1px solid rgba(0,255,204,0.2);border-radius:4px;padding:2px 8px;}
-
-  /* API BAR */
-  .api-bar{position:relative;z-index:10;padding:8px 24px;display:flex;align-items:center;gap:10px;background:rgba(10,21,32,0.97);border-bottom:1px solid var(--border);}
-  .api-label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:2px;white-space:nowrap;}
-  .api-input{flex:1;background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;outline:none;transition:all 0.2s;}
-  .api-input:focus{border-color:var(--accent2);}
-  .api-input.valid{border-color:rgba(0,255,204,0.4);background:rgba(0,255,204,0.04);}
-  .btn-xs{background:rgba(0,212,255,0.08);border:1px solid var(--border2);border-radius:6px;padding:6px 14px;color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-  .btn-xs:hover{background:rgba(0,212,255,0.2);box-shadow:var(--glow);}
-  .api-link{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--accent2);cursor:pointer;white-space:nowrap;text-decoration:underline;text-underline-offset:2px;}
-  .api-link:hover{color:var(--accent);}
-  .key-status{display:flex;align-items:center;gap:5px;font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);white-space:nowrap;}
-
-  /* CORS BANNER */
-  .cors-banner{position:relative;z-index:10;padding:7px 24px;background:rgba(255,170,0,0.07);border-bottom:1px solid rgba(255,170,0,0.22);display:none;align-items:center;gap:10px;}
-  .cors-banner.show{display:flex;}
-  .cors-banner span{font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--warn);flex:1;}
-  .cors-banner button{background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.3);border-radius:5px;padding:4px 10px;color:var(--warn);font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;}
-
-  /* LAYOUT */
-  .main{flex:1;display:flex;overflow:hidden;position:relative;z-index:1;}
-
-  /* SIDEBAR */
-  .sidebar{width:210px;min-width:210px;border-right:1px solid var(--border);background:rgba(8,16,24,0.92);display:flex;flex-direction:column;padding:10px 0;overflow-y:auto;}
-  .sidebar::-webkit-scrollbar{width:3px;}
-  .sidebar::-webkit-scrollbar-thumb{background:var(--border);}
-  .s-section{padding:7px 14px 3px;font-size:9px;letter-spacing:3px;color:var(--text3);font-family:'Share Tech Mono',monospace;text-transform:uppercase;margin-top:4px;}
-  .s-btn{margin:1px 7px;padding:8px 10px;background:transparent;border:1px solid transparent;border-radius:6px;color:var(--text2);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;text-align:left;transition:all 0.15s;display:flex;align-items:center;gap:7px;}
-  .s-btn:hover{background:rgba(0,212,255,0.07);border-color:var(--border);color:var(--text);}
-  .s-btn .ic{font-size:13px;width:16px;text-align:center;flex-shrink:0;}
-  .s-div{height:1px;background:var(--border);margin:7px 12px;}
-  .lang-row{margin:3px 7px;display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-  .l-btn{flex:1;padding:6px 2px;background:transparent;border:none;color:var(--text2);font-size:11px;font-family:'Share Tech Mono',monospace;cursor:pointer;transition:all 0.2s;}
-  .l-btn.active{background:rgba(0,212,255,0.13);color:var(--accent);}
-  .model-sel{margin:3px 7px;background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text2);font-family:'Share Tech Mono',monospace;font-size:11px;outline:none;cursor:pointer;width:calc(100% - 14px);}
-  .model-sel option{background:#0a1520;}
-  .clear-btn{margin:5px 7px;padding:8px 10px;background:transparent;border:1px solid rgba(255,68,102,0.18);border-radius:6px;color:rgba(255,68,102,0.5);font-size:11px;font-family:'Share Tech Mono',monospace;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;letter-spacing:1px;}
-  .clear-btn:hover{background:rgba(255,68,102,0.07);color:var(--danger);border-color:rgba(255,68,102,0.35);}
-
-  /* CHAT */
-  .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-  .messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;}
-  .messages::-webkit-scrollbar{width:4px;}
-  .messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-
-  /* WELCOME */
-  .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:28px;gap:12px;animation:fadeIn 0.7s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-  .w-ring{width:94px;height:94px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:var(--accent);box-shadow:var(--glow),var(--glow2),inset 0 0 30px rgba(0,212,255,0.08);animation:ringPulse 3s ease-in-out infinite;position:relative;}
-  .w-ring::before{content:'';position:absolute;width:114px;height:114px;border-radius:50%;border:1px solid rgba(0,212,255,0.13);animation:ringPulse 3s ease-in-out infinite 0.9s;}
-  .w-ring::after{content:'';position:absolute;width:136px;height:136px;border-radius:50%;border:1px solid rgba(0,212,255,0.06);animation:ringPulse 3s ease-in-out infinite 1.5s;}
-  .welcome h2{font-family:'Orbitron',monospace;font-size:19px;font-weight:700;color:var(--accent);letter-spacing:4px;margin-top:4px;}
-  .welcome p{color:var(--text2);font-size:13px;line-height:1.7;max-width:430px;font-family:'Share Tech Mono',monospace;}
-  .free-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,204,0.07);border:1px solid rgba(0,255,204,0.22);border-radius:20px;padding:5px 14px;font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--accent3);letter-spacing:1px;}
-  .chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:6px;max-width:520px;}
-  .chip{padding:6px 13px;background:rgba(0,212,255,0.06);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.2s;font-family:'Share Tech Mono',monospace;}
-  .chip:hover{background:rgba(0,212,255,0.14);border-color:var(--accent2);color:var(--accent);}
-
-  /* MESSAGES */
-  .msg{display:flex;gap:10px;animation:msgIn 0.25s ease;max-width:880px;}
-  @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-  .msg.user{flex-direction:row-reverse;align-self:flex-end;}
-  .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Orbitron',monospace;font-weight:700;flex-shrink:0;}
-  .msg.jarvis .avatar{background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);box-shadow:0 0 8px rgba(0,212,255,0.2);}
-  .msg.user .avatar{background:rgba(0,255,204,0.08);border:1px solid var(--accent3);color:var(--accent3);}
-  .bubble{padding:11px 15px;border-radius:12px;font-size:14px;line-height:1.7;max-width:calc(100% - 44px);}
-  .msg.jarvis .bubble{background:rgba(0,212,255,0.05);border:1px solid var(--border);color:var(--text);border-top-left-radius:3px;}
-  .msg.user .bubble{background:rgba(0,136,204,0.1);border:1px solid rgba(0,136,204,0.22);color:var(--text);border-top-right-radius:3px;}
-  .meta{font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-top:4px;display:flex;align-items:center;gap:6px;}
-  .msg.user .meta{justify-content:flex-end;}
-  .m-badge{font-size:9px;font-family:'Share Tech Mono',monospace;color:var(--accent3);background:rgba(0,255,204,0.07);border:1px solid rgba(0,255,204,0.18);border-radius:4px;padding:1px 6px;}
-  .m-speed{font-size:9px;font-family:'Share Tech Mono',monospace;color:rgba(0,212,255,0.5);margin-left:2px;}
-
-  /* TYPING */
-  .typing-wrap{display:flex;gap:10px;}
-  .typing{display:flex;align-items:center;gap:5px;padding:11px 14px;background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:12px;border-top-left-radius:3px;width:fit-content;}
-  .typing span{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:tdot 1.2s ease-in-out infinite;}
-  .typing span:nth-child(2){animation-delay:0.2s;}
-  .typing span:nth-child(3){animation-delay:0.4s;}
-  @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:0.3;}30%{transform:translateY(-5px);opacity:1;}}
-
-  /* FORMATTING */
-  .bubble strong{color:var(--accent);font-weight:500;}
-  .bubble em{color:var(--accent3);font-style:normal;}
-  .bubble code{font-family:'Share Tech Mono',monospace;font-size:12px;background:rgba(0,212,255,0.08);padding:1px 5px;border-radius:3px;color:var(--accent);}
-  .bubble ul,.bubble ol{padding-left:18px;margin:5px 0;}
-  .bubble li{margin:3px 0;}
-
-  /* INPUT */
-  .input-bar{padding:12px 24px 16px;border-top:1px solid var(--border);background:rgba(5,10,15,0.97);backdrop-filter:blur(10px);}
-  .input-wrap{display:flex;align-items:flex-end;gap:10px;background:rgba(0,212,255,0.04);border:1px solid var(--border2);border-radius:12px;padding:10px 12px;transition:all 0.2s;}
-  .input-wrap:focus-within{border-color:var(--accent2);box-shadow:0 0 20px rgba(0,212,255,0.1);}
-  #userInput{flex:1;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:22px;max-height:120px;line-height:1.5;padding-top:2px;}
-  #userInput::placeholder{color:var(--text3);}
-  .send-btn{width:34px;height:34px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid var(--border2);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
-  .send-btn:hover{background:rgba(0,212,255,0.24);box-shadow:var(--glow);}
-  .send-btn:disabled{opacity:0.25;cursor:not-allowed;}
-  .hint{text-align:center;font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);margin-top:6px;letter-spacing:0.8px;}
-
-  /* MODAL */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-  .overlay.show{display:flex;}
-  .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:26px;max-width:460px;width:92%;box-shadow:var(--glow2);}
-  .modal h3{font-family:'Orbitron',monospace;font-size:15px;color:var(--accent);letter-spacing:3px;margin-bottom:14px;}
-  .modal p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px;font-family:'Share Tech Mono',monospace;}
-  .modal ol{padding-left:18px;margin-bottom:14px;}
-  .modal li{font-size:13px;color:var(--text2);line-height:1.9;font-family:'Share Tech Mono',monospace;}
-  .modal li strong{color:var(--accent3);}
-  .note{background:rgba(0,255,204,0.06);border:1px solid rgba(0,255,204,0.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--accent3);font-family:'Share Tech Mono',monospace;margin-bottom:14px;line-height:1.7;}
-  .warn-note{background:rgba(255,170,0,0.07);border:1px solid rgba(255,170,0,0.22);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--warn);font-family:'Share Tech Mono',monospace;margin-bottom:14px;line-height:1.7;}
-  .modal-btns{display:flex;gap:9px;flex-wrap:wrap;}
-  .m-btn{padding:8px 16px;border-radius:7px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;border:1px solid var(--border2);background:rgba(0,212,255,0.08);color:var(--accent);}
-  .m-btn:hover{background:rgba(0,212,255,0.2);}
-  .m-btn.sec{background:transparent;color:var(--text2);border-color:var(--border);}
-  .m-btn.sec:hover{background:rgba(255,255,255,0.04);color:var(--text);}
-
-  /* VOICE */
-  .voice-bar{display:flex;align-items:center;gap:10px;padding:6px 24px;background:rgba(10,21,32,0.97);border-bottom:1px solid var(--border);}
-  .voice-label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);letter-spacing:2px;white-space:nowrap;}
-  .voice-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;}
-  .voice-toggle input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
-  .voice-toggle span{font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:1px;}
-  .voice-toggle:hover span{color:var(--accent);}
-  .voice-rate{display:flex;align-items:center;gap:8px;}
-  .voice-rate label{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);letter-spacing:1px;}
-  .voice-rate input[type=range]{width:80px;accent-color:var(--accent);cursor:pointer;}
-  .voice-rate span{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--accent2);min-width:24px;}
-  .voice-lang{background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:5px;padding:4px 8px;color:var(--text2);font-family:'Share Tech Mono',monospace;font-size:10px;outline:none;cursor:pointer;}
-  .voice-lang option{background:#0a1520;}
-  .stop-btn{background:rgba(255,68,102,0.08);border:1px solid rgba(255,68,102,0.25);border-radius:5px;padding:4px 12px;color:rgba(255,68,102,0.7);font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;}
-  .stop-btn:hover{background:rgba(255,68,102,0.15);color:var(--danger);}
-  .mic-btn{width:34px;height:34px;border-radius:8px;background:rgba(0,212,255,0.08);border:1px solid var(--border2);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
-  .mic-btn:hover{background:rgba(0,212,255,0.2);box-shadow:var(--glow);}
-  .mic-btn.listening{background:rgba(255,68,102,0.15);border-color:rgba(255,68,102,0.4);color:var(--danger);animation:micPulse 0.8s ease-in-out infinite;}
-  @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,102,0.4);}50%{box-shadow:0 0 0 8px rgba(255,68,102,0);}}
-  .speak-btn{background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:2px 4px;transition:color 0.2s;line-height:1;}
-  .speak-btn:hover{color:var(--accent);}
-
-  /* DECORATIONS */
-  .corner{position:fixed;width:26px;height:26px;border-color:var(--accent);border-style:solid;opacity:0.22;z-index:5;}
-  .corner.tl{top:8px;left:8px;border-width:2px 0 0 2px;}
-  .corner.tr{top:8px;right:8px;border-width:2px 2px 0 0;}
-  .corner.bl{bottom:8px;left:8px;border-width:0 0 2px 2px;}
-  .corner.br{bottom:8px;right:8px;border-width:0 2px 2px 0;}
-  .scanline{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.3),transparent);animation:scan 5s linear infinite;pointer-events:none;z-index:100;opacity:0.35;}
-  @keyframes scan{0%{top:0;}100%{top:100vh;}}
+:root{--bg:#020810;--bg2:#061020;--bg3:#0a1828;--accent:#00d4ff;--accent2:#0077bb;--accent3:#00ffcc;--accent4:#7b2fff;--danger:#ff3355;--warn:#ffaa00;--ok:#00ffcc;--text:#c8e8f8;--text2:#5a8aaa;--text3:#2a4a6a;--border:rgba(0,212,255,0.12);--border2:rgba(0,212,255,0.28);--glow:0 0 24px rgba(0,212,255,0.35);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.025) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0;animation:gridDrift 30s linear infinite;}
+body::after{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);width:900px;height:500px;background:radial-gradient(ellipse,rgba(0,119,187,0.07) 0%,transparent 65%);pointer-events:none;z-index:0;}
+@keyframes gridDrift{0%{background-position:0 0;}100%{background-position:50px 50px;}}
+header{position:relative;z-index:10;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(2,8,16,0.97);backdrop-filter:blur(12px);}
+.logo-area{display:flex;align-items:center;gap:14px;}
+.nova-orb{width:44px;height:44px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.nova-orb .r1{position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--accent);animation:op 3s ease-in-out infinite;}
+.nova-orb .r2{position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(0,212,255,0.2);animation:op 3s ease-in-out infinite 0.8s;}
+.nova-orb .r3{position:absolute;inset:-15px;border-radius:50%;border:1px solid rgba(0,212,255,0.08);animation:op 3s ease-in-out infinite 1.6s;}
+.nova-orb .core{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,0.25),rgba(0,119,187,0.1));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:12px;font-weight:900;color:var(--accent);}
+@keyframes op{0%,100%{box-shadow:0 0 8px rgba(0,212,255,0.2);}50%{box-shadow:0 0 25px rgba(0,212,255,0.6),0 0 50px rgba(0,212,255,0.15);}}
+.nova-orb.listening .r1{border-color:var(--accent3);animation:op 0.5s ease-in-out infinite;}
+.nova-orb.speaking .r1{border-color:var(--accent4);animation:op 0.8s ease-in-out infinite;}
+.logo-text h1{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-text p{font-size:9px;letter-spacing:3px;color:var(--text2);font-family:'Share Tech Mono',monospace;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:14px;}
+.status-pill{display:flex;align-items:center;gap:6px;background:rgba(0,212,255,0.06);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);animation:bl 2s ease-in-out infinite;}
+.dot.warn{background:var(--warn);box-shadow:0 0 8px var(--warn);animation:none;}
+.dot.off{background:var(--text3);box-shadow:none;animation:none;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:0.35;}}
+#clock{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--accent);letter-spacing:2px;}
+.api-bar{position:relative;z-index:9;display:flex;align-items:center;gap:8px;padding:7px 20px;background:rgba(2,8,16,0.95);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.api-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);letter-spacing:2px;white-space:nowrap;}
+.api-input{background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text);font-size:11px;font-family:'Share Tech Mono',monospace;width:220px;outline:none;transition:border 0.2s;}
+.api-input:focus{border-color:var(--accent2);}
+.api-input.valid{border-color:rgba(0,255,204,0.4);}
+.btn-xs{background:rgba(0,212,255,0.1);border:1px solid var(--border2);border-radius:5px;padding:5px 10px;color:var(--accent);font-size:10px;font-family:'Share Tech Mono',monospace;cursor:pointer;letter-spacing:1px;transition:all 0.2s;white-space:nowrap;}
+.btn-xs:hover{background:rgba(0,212,255,0.2);box-shadow:var(--glow);}
+.key-status{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text2);}
+.api-link{font-size:10px;color:var(--accent2);cursor:pointer;text-decoration:underline;font-family:'Share Tech Mono',monospace;white-space:nowrap;}
+.voice-bar{position:relative;z-index:9;display:flex;align-items:center;gap:10px;padding:6px 20px;background:rgba(2,8,16,0.93);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.voice-label{font-size:10px;color:var(--text2);font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
+input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);}
+.voice-lang{background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:11px;padding:3px 7px;font-family:'Share Tech Mono',monospace;outline:none;}
+.speed-wrap{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);font-family:'Share Tech Mono',monospace;}
+input[type=range]{accent-color:var(--accent);width:80px;}
+.stop-btn{background:rgba(255,51,85,0.12);border:1px solid rgba(255,51,85,0.3);border-radius:5px;padding:4px 10px;color:var(--danger);font-size:10px;font-family:'Share Tech Mono',monospace;cursor:pointer;letter-spacing:1px;}
+.layout{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+.sidebar{width:190px;background:rgba(2,8,16,0.95);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 0;overflow-y:auto;flex-shrink:0;}
+.s-section{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--text3);padding:6px 14px 4px;text-transform:uppercase;}
+.s-btn{background:none;border:none;color:var(--text2);font-size:12px;padding:8px 14px;text-align:left;cursor:pointer;width:100%;display:flex;align-items:center;gap:8px;transition:all 0.2s;font-family:'Inter',sans-serif;}
+.s-btn:hover{color:var(--accent);background:rgba(0,212,255,0.05);}
+.s-btn .ic{font-size:14px;width:18px;text-align:center;}
+.s-div{height:1px;background:var(--border);margin:8px 10px;}
+.model-sel{background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:11px;padding:5px 8px;width:calc(100% - 20px);margin:4px 10px;font-family:'Share Tech Mono',monospace;outline:none;}
+.lang-row{display:flex;gap:4px;padding:4px 10px;}
+.l-btn{flex:1;background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:5px;color:var(--text2);font-size:10px;padding:5px 2px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all 0.2s;text-align:center;}
+.l-btn.active{background:rgba(0,212,255,0.15);border-color:var(--accent);color:var(--accent);}
+.wake-status{font-size:9px;color:var(--text3);padding:2px 14px;font-family:'Share Tech Mono',monospace;}
+.wake-status.on{color:var(--accent3);}
+.clear-btn{margin:8px 10px;background:rgba(255,51,85,0.08);border:1px solid rgba(255,51,85,0.2);border-radius:5px;color:var(--danger);font-size:11px;padding:7px;cursor:pointer;font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
+.clear-btn:hover{background:rgba(255,51,85,0.18);}
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;}
+.messages::-webkit-scrollbar{width:4px;}
+.messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:30px 20px;gap:14px;}
+.welcome-orb{width:90px;height:90px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;}
+.welcome-orb .wo1{position:absolute;inset:0;border-radius:50%;border:2px solid var(--accent);animation:op 3s ease-in-out infinite;}
+.welcome-orb .wo2{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(0,212,255,0.2);animation:op 3s ease-in-out infinite 1s;}
+.welcome-orb .wo3{position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(0,212,255,0.08);animation:op 3s ease-in-out infinite 2s;}
+.welcome-orb .wcore{width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,0.15),rgba(0,119,187,0.05));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.welcome h2{font-family:'Orbitron',monospace;font-size:24px;font-weight:900;letter-spacing:10px;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.welcome p{color:var(--text2);font-size:13px;max-width:480px;line-height:1.6;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px;}
+.chip{background:rgba(0,212,255,0.06);border:1px solid var(--border2);border-radius:20px;padding:7px 15px;font-size:12px;cursor:pointer;color:var(--text);transition:all 0.2s;white-space:nowrap;}
+.chip:hover{background:rgba(0,212,255,0.15);border-color:var(--accent);color:var(--accent);box-shadow:var(--glow);}
+.msg{display:flex;gap:12px;animation:mi 0.3s ease;}
+@keyframes mi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.msg.user{flex-direction:row-reverse;}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Orbitron',monospace;font-weight:700;flex-shrink:0;}
+.msg.jarvis .avatar{background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);}
+.msg.user .avatar{background:rgba(123,47,255,0.15);border:1px solid rgba(123,47,255,0.5);color:#9b6fff;}
+.bubble{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;max-width:680px;font-size:13.5px;line-height:1.7;color:var(--text);}
+.msg.user .bubble{background:rgba(123,47,255,0.08);border-color:rgba(123,47,255,0.2);}
+.msg.jarvis .bubble{border-radius:4px 12px 12px 12px;}
+.msg.user .bubble{border-radius:12px 4px 12px 12px;}
+.bubble strong{color:var(--accent3);}
+.bubble code{background:rgba(0,212,255,0.08);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent);}
+.bubble pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:12px;overflow-x:auto;margin:8px 0;}
+.bubble pre code{background:none;border:none;padding:0;color:var(--accent3);}
+.meta{font-size:10px;color:var(--text3);margin-top:5px;font-family:'Share Tech Mono',monospace;display:flex;align-items:center;gap:8px;}
+.speak-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0;transition:color 0.2s;}
+.speak-btn:hover{color:var(--accent);}
+.typing{display:flex;gap:5px;align-items:center;padding:12px 16px;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:td 1.2s ease-in-out infinite;}
+.typing span:nth-child(2){animation-delay:0.2s;}
+.typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-6px);opacity:1;}}
+.input-area{padding:14px 20px;background:rgba(2,8,16,0.97);border-top:1px solid var(--border);}
+.input-wrap{display:flex;gap:10px;align-items:flex-end;background:rgba(0,212,255,0.03);border:1px solid var(--border2);border-radius:14px;padding:10px 14px;transition:border 0.2s;}
+.input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 20px rgba(0,212,255,0.08);}
+#userInput{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;resize:none;min-height:22px;max-height:120px;font-family:'Inter',sans-serif;line-height:1.5;}
+#userInput::placeholder{color:var(--text3);}
+.send-btn{width:36px;height:36px;border-radius:9px;background:rgba(0,212,255,0.1);border:1px solid var(--border2);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.send-btn:hover{background:rgba(0,212,255,0.22);box-shadow:var(--glow);}
+.send-btn:disabled{opacity:0.25;cursor:not-allowed;}
+.mic-btn{width:36px;height:36px;border-radius:9px;background:rgba(0,212,255,0.06);border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.mic-btn.active{background:rgba(0,255,204,0.15);border-color:var(--accent3);color:var(--accent3);animation:mp 1s ease-in-out infinite;}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(0,255,204,0.4);}50%{box-shadow:0 0 0 8px rgba(0,255,204,0);}}
+.hint{font-size:10px;color:var(--text3);text-align:center;margin-top:6px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;max-width:460px;width:90%;box-shadow:0 0 60px rgba(0,212,255,0.1);}
+.modal h2{font-family:'Orbitron',monospace;font-size:15px;color:var(--accent);letter-spacing:3px;margin-bottom:14px;}
+.modal label{font-size:10px;color:var(--text2);font-family:'Share Tech Mono',monospace;letter-spacing:1px;display:block;margin-bottom:4px;}
+.modal input,.modal textarea{width:100%;background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:6px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;margin-bottom:10px;font-family:'Inter',sans-serif;}
+.modal-btns{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.m-btn{background:rgba(0,212,255,0.1);border:1px solid var(--border2);border-radius:7px;padding:8px 18px;color:var(--accent);font-size:12px;font-family:'Share Tech Mono',monospace;cursor:pointer;letter-spacing:1px;transition:all 0.2s;}
+.m-btn:hover{background:rgba(0,212,255,0.2);}
+.m-btn.sec{background:transparent;border-color:var(--border);color:var(--text2);}
+.settings-panel{position:fixed;right:0;top:0;bottom:0;width:300px;background:var(--bg2);border-left:1px solid var(--border2);z-index:50;transform:translateX(100%);transition:transform 0.3s ease;overflow-y:auto;padding:20px;}
+.settings-panel.open{transform:translateX(0);}
+.settings-panel h3{font-family:'Orbitron',monospace;font-size:12px;color:var(--accent);letter-spacing:3px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.srow{margin-bottom:14px;}
+.slabel{font-size:10px;color:var(--text2);font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-bottom:4px;display:block;}
+.sinput{width:100%;background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;font-family:'Share Tech Mono',monospace;}
+.sinput:focus{border-color:var(--accent2);}
+.sclosebtn{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;}
+.wake-ind{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,255,204,0.1);border:1px solid rgba(0,255,204,0.3);border-radius:25px;padding:8px 20px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent3);display:none;z-index:20;}
+.wake-ind.show{display:block;}
 </style>
 </head>
 <body>
-<div class="scanline"></div>
-<div class="corner tl"></div><div class="corner tr"></div>
-<div class="corner bl"></div><div class="corner br"></div>
-
-<!-- HEADER -->
 <header>
   <div class="logo-area">
-    <div class="jarvis-ring">
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-        <circle cx="10" cy="10" r="4" fill="#00d4ff" opacity="0.9"/>
-        <circle cx="10" cy="10" r="7" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
-      </svg>
+    <div class="nova-orb" id="novaOrb" onclick="toggleWake()">
+      <div class="r1"></div><div class="r2"></div><div class="r3"></div>
+      <div class="core">N</div>
     </div>
     <div class="logo-text">
-      <h1>JARVIS</h1>
-      <p>Personal Intelligence · Groq · Llama 3.3 · Free</p>
+      <h1>NOVA</h1>
+      <p>Personal Intelligence · Groq · Free</p>
     </div>
   </div>
   <div class="header-right">
-    <span class="speed-badge">⚡ ULTRA FAST</span>
-    <div class="status-pill"><div class="dot" id="statusDot"></div><span id="statusText">READY</span></div>
-    <div class="time-display" id="clock">--:--:--</div>
+    <div class="status-pill"><div class="dot" id="statusDot"></div><span id="statusTxt">READY</span></div>
+    <div id="clock">--:--:--</div>
   </div>
 </header>
 
-<!-- API BAR -->
 <div class="api-bar">
   <span class="api-label">GROQ KEY</span>
   <input class="api-input" type="password" id="apiKeyInput" placeholder="Paste Groq API key (gsk_...)">
   <button class="btn-xs" onclick="saveKey()">SAVE</button>
-  <span class="api-link" onclick="showSetup()">Get free key ↗</span>
-  <div class="key-status">
-    <div class="dot warn" id="keyDot"></div>
-    <span id="keyTxt">NO KEY</span>
-  </div>
-  <span class="api-label" style="margin-left:12px;">TTS KEY</span>
-  <input class="api-input" type="password" id="ttsKeyInput" placeholder="Google Cloud TTS API key" style="max-width:220px;">
+  <span class="api-link" onclick="window.open('https://console.groq.com','_blank')">Get free key ↗</span>
+  <div class="key-status"><div class="dot warn" id="keyDot"></div><span id="keyTxt">NO KEY</span></div>
+  <span class="api-label" style="margin-left:10px;">TTS KEY</span>
+  <input class="api-input" type="password" id="ttsKeyInput" placeholder="Google Cloud TTS key" style="max-width:190px;">
   <button class="btn-xs" onclick="saveTtsKey()">SAVE</button>
-  <div class="key-status">
-    <div class="dot warn" id="ttsDot"></div>
-    <span id="ttsTxt">NO KEY</span>
-  </div>
+  <div class="key-status"><div class="dot warn" id="ttsDot"></div><span id="ttsTxt">NO KEY</span></div>
 </div>
 
-<!-- VOICE BAR -->
 <div class="voice-bar">
   <span class="voice-label">VOICE</span>
-  <label class="voice-toggle">
-    <input type="checkbox" id="voiceOn" onchange="toggleVoice(this.checked)">
-    <span id="voiceToggleLabel">AUTO-SPEAK OFF</span>
-  </label>
-  <div style="width:1px;height:16px;background:var(--border);margin:0 4px;"></div>
-  <div class="voice-rate">
-    <label>SPEED</label>
-    <input type="range" id="voiceRate" min="0.6" max="1.8" step="0.1" value="1.0" oninput="document.getElementById('rateVal').textContent=this.value+'x'">
+  <input type="checkbox" id="voiceOn" onchange="toggleVoice(this.checked)">
+  <span id="vtl" style="font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text2);">AUTO-SPEAK OFF</span>
+  <div class="speed-wrap">
+    <span>SPEED</span>
+    <input type="range" id="voiceRate" min="0.7" max="1.8" step="0.1" value="1.0" oninput="document.getElementById('rateVal').textContent=parseFloat(this.value).toFixed(1)+'x'">
     <span id="rateVal">1.0x</span>
   </div>
-  <div style="width:1px;height:16px;background:var(--border);margin:0 4px;"></div>
   <select class="voice-lang" id="voiceLang" onchange="setVoiceLang()">
-    <option value="en-US">English (US)</option>
-    <option value="en-GB">English (UK)</option>
-    <option value="ta-IN">Tamil (India)</option>
-    <option value="ml-IN">Malayalam (India)</option>
     <option value="auto">Auto detect</option>
+    <optgroup label="English (Indian)">
+      <option value="en-IN-F">English Female 🇮🇳</option>
+      <option value="en-IN-M">English Male 🇮🇳</option>
+    </optgroup>
+    <optgroup label="Tamil">
+      <option value="ta-IN-F">Tamil Female</option>
+      <option value="ta-IN-M">Tamil Male</option>
+    </optgroup>
+    <optgroup label="Malayalam">
+      <option value="ml-IN-F">Malayalam Female</option>
+      <option value="ml-IN-M">Malayalam Male</option>
+    </optgroup>
   </select>
   <button class="stop-btn" onclick="stopSpeaking()">■ STOP</button>
-  <button class="stop-btn" onclick="listVoices()" style="font-size:10px;padding:4px 8px;opacity:0.6;" title="Show available TTS voices">🎙 VOICES</button>
+  <button class="stop-btn" onclick="listVoices()" style="font-size:10px;opacity:0.6;">🎙 VOICES</button>
 </div>
 
-<!-- CORS BANNER -->
-<div class="cors-banner" id="corsBanner">
-  <span>⚠️ Open via local server, not file://  —  run: python -m http.server 8080  then open localhost:8080/JARVIS.html</span>
-  <button onclick="showCors()">How to fix</button>
-  <button onclick="this.closest('.cors-banner').classList.remove('show')" style="opacity:0.5;margin-left:4px;">✕</button>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-  <!-- SIDEBAR -->
+<div class="layout">
   <div class="sidebar">
+    <div class="s-section">Actions</div>
+    <button class="s-btn" onclick="startWhatsApp()"><span class="ic">💬</span>WhatsApp</button>
+    <button class="s-btn" onclick="startEmail()"><span class="ic">📧</span>Email</button>
+    <div class="s-div"></div>
     <div class="s-section">Model</div>
     <select class="model-sel" id="modelSel">
       <option value="llama-3.3-70b-versatile">Llama 3.3 70B (best)</option>
-      <option value="llama-3.1-8b-instant">Llama 3.1 8B (fastest)</option>
-      <option value="mixtral-8x7b-32768">Mixtral 8x7B (balanced)</option>
-      <option value="gemma2-9b-it">Gemma 2 9B (Google)</option>
+      <option value="llama-3.1-8b-instant">Llama 3.1 8B (fast)</option>
+      <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
     </select>
     <div class="s-div"></div>
     <div class="s-section">Language</div>
@@ -281,610 +212,448 @@
       <button class="l-btn" id="lMX" onclick="setLang('MIX')">MIX</button>
     </div>
     <div class="s-div"></div>
-    <button class="clear-btn" onclick="clearChat()">✕ &nbsp;CLEAR CHAT</button>
+    <div class="s-section">Wake Word</div>
+    <button class="s-btn" id="wakeBtn" onclick="toggleWakeWord()"><span class="ic">🎤</span>Enable "Hey NOVA"</button>
+    <div class="wake-status" id="wakeStatus">off</div>
+    <div class="s-div"></div>
+    <button class="clear-btn" onclick="clearChat()">✕  CLEAR CHAT</button>
   </div>
 
-  <!-- CHAT -->
   <div class="chat-area">
     <div class="messages" id="messages">
       <div class="welcome" id="welcome">
-        <div class="w-ring">J</div>
-        <h2>JARVIS ONLINE</h2>
-        <p>Your intelligent assistant. Ask me anything — write, analyse, explain, translate, code, or just chat. Free via Groq.</p>
+        <div class="welcome-orb"><div class="wo1"></div><div class="wo2"></div><div class="wo3"></div><div class="wcore">N</div></div>
+        <h2>NOVA ONLINE</h2>
+        <p>Your intelligent personal assistant — powered by AI. Ask me anything, or say <em>"Hey NOVA"</em> to go hands-free.</p>
         <div class="chips">
-          <div class="chip" onclick="sq('Summarise the key events of this week.')">Weekly summary</div>
+          <div class="chip" onclick="sq('Give me a quick daily briefing.')">Daily briefing</div>
           <div class="chip" onclick="sq('Help me write a professional email.')">Write email</div>
-          <div class="chip" onclick="sq('Explain a concept to me simply.')">Explain anything</div>
-          <div class="chip" onclick="sq('ஒரு கவிதை எழுது.')">தமிழில் பேசு</div>
+          <div class="chip" onclick="sq('Explain something to me simply.')">Explain anything</div>
+          <div class="chip" onclick="sq('ஒரு அழகான கவிதை எழுது.')">தமிழில் பேசு</div>
           <div class="chip" onclick="sq('ഒരു കവിത എഴുതൂ.')">മലയാളം</div>
-          <div class="chip" onclick="showSetup()">🔑 Get free key</div>
+          <div class="chip" onclick="window.open('https://console.groq.com','_blank')">🔑 Get free key</div>
         </div>
       </div>
     </div>
-
-    <!-- INPUT BAR -->
-    <div class="input-bar">
+    <div class="input-area">
       <div class="input-wrap">
-        <textarea id="userInput" rows="1" placeholder="Ask me anything — English, தமிழ், മലയാളം or mix freely…"></textarea>
+        <textarea id="userInput" rows="1" placeholder="Ask NOVA anything — English, தமிழ், മലയാളം or mix…"></textarea>
         <button class="send-btn" id="sendBtn" onclick="send()">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-            <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
-        <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice input">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <rect x="9" y="2" width="6" height="12" rx="3" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M5 10a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
         </button>
       </div>
-      <div class="hint" id="hint">ENTER to send · SHIFT+ENTER new line · Groq API · 100% Free · No billing</div>
+      <div class="hint">ENTER to send · SHIFT+ENTER new line · Groq API · 100% Free · No billing</div>
     </div>
   </div>
 </div>
 
-<!-- SETUP MODAL -->
-<div class="overlay" id="setupModal">
+<div class="wake-ind" id="wakeInd">🎤 Listening for "Hey NOVA"…</div>
+
+<!-- WHATSAPP MODAL -->
+<div class="modal-overlay" id="waModal">
   <div class="modal">
-    <h3>GET FREE GROQ KEY</h3>
-    <div class="note">✓ No credit card · No billing · Works instantly · 14,400 requests/day free</div>
-    <ol>
-      <li>Go to <strong>console.groq.com</strong></li>
-      <li>Click <strong>Sign Up</strong> — use Google or email</li>
-      <li>Go to <strong>API Keys</strong> in the left menu</li>
-      <li>Click <strong>Create API Key</strong> — give it any name</li>
-      <li>Copy the key (starts with <strong>gsk_...</strong>)</li>
-      <li>Paste it in the <strong>GROQ KEY</strong> field above → click <strong>SAVE</strong></li>
-    </ol>
+    <h2>WHATSAPP</h2>
+    <label>WAHA Server URL</label>
+    <input type="text" id="waUrl" placeholder="https://your-waha.railway.app">
+    <label>To (with country code)</label>
+    <input type="text" id="waNumber" placeholder="+971501234567">
+    <label>Message</label>
+    <textarea id="waMsg" rows="4" style="resize:vertical;" placeholder="Your message…"></textarea>
     <div class="modal-btns">
-      <button class="m-btn" onclick="window.open('https://console.groq.com','_blank')">Open Groq Console ↗</button>
-      <button class="m-btn sec" onclick="closeM('setupModal')">Close</button>
+      <button class="m-btn sec" onclick="closeM('waModal')">Cancel</button>
+      <button class="m-btn" onclick="doSendWa()">SEND ↗</button>
     </div>
   </div>
 </div>
 
-<!-- CORS MODAL -->
-<div class="overlay" id="corsModal">
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="emailModal">
   <div class="modal">
-    <h3>RUN VIA LOCAL SERVER</h3>
-    <p>Browsers block API calls from <code>file://</code>. Serve via localhost instead:</p>
-    <div class="warn-note">
-      <strong>Option 1 — Python (recommended):</strong><br>
-      Open terminal in the JARVIS.html folder:<br>
-      <code>python -m http.server 8080</code><br>
-      Then open: <strong>http://localhost:8080/JARVIS.html</strong><br><br>
-      <strong>Option 2 — VS Code:</strong><br>
-      Install "Live Server" extension → right-click file → Open with Live Server<br><br>
-      <strong>Option 3 — Node:</strong><br>
-      <code>npx serve .</code>  then open the URL shown
-    </div>
+    <h2>SEND EMAIL</h2>
+    <label>To</label>
+    <input type="email" id="emailTo" placeholder="recipient@example.com">
+    <label>Subject</label>
+    <input type="text" id="emailSub" placeholder="Subject">
+    <label>Message</label>
+    <textarea id="emailBody" rows="5" style="resize:vertical;" placeholder="Message…"></textarea>
     <div class="modal-btns">
-      <button class="m-btn sec" onclick="closeM('corsModal')">Got it</button>
+      <button class="m-btn sec" onclick="closeM('emailModal')">Cancel</button>
+      <button class="m-btn" onclick="doSendEmail()">OPEN GMAIL ↗</button>
     </div>
   </div>
 </div>
+
+<!-- SETTINGS -->
+<div class="settings-panel" id="settingsPanel">
+  <button class="sclosebtn" onclick="toggleSettings()">✕</button>
+  <h3>SETTINGS</h3>
+  <div class="srow"><span class="slabel">YOUR NAME</span><input class="sinput" id="sName" placeholder="Your name" oninput="localStorage.setItem('nova_name',this.value);rebuildSys()"></div>
+  <div class="srow"><span class="slabel">YOUR ROLE / CONTEXT</span><input class="sinput" id="sRole" placeholder="e.g. Production manager, Abu Dhabi" oninput="localStorage.setItem('nova_role',this.value);rebuildSys()"></div>
+  <div class="srow"><span class="slabel">WAHA SERVER URL</span><input class="sinput" id="sWaha" placeholder="https://your-waha.railway.app" oninput="localStorage.setItem('nova_waha',this.value)"></div>
+  <div class="srow" style="margin-top:20px;"><span class="slabel" style="color:var(--accent3);">ABOUT PHONE CALLS</span><p style="font-size:11px;color:var(--text2);line-height:1.6;">Phone calls from a browser are not possible without a backend service. For calling, connect Twilio to n8n and I can trigger it via WhatsApp command.</p></div>
+</div>
+<button onclick="toggleSettings()" style="position:fixed;right:0;top:50%;transform:translateY(-50%);background:rgba(0,212,255,0.08);border:1px solid var(--border2);border-right:none;border-radius:8px 0 0 8px;padding:10px 5px;cursor:pointer;z-index:49;color:var(--text2);font-size:14px;">⚙</button>
 
 <script>
-// ===== STATE =====
-let apiKey = localStorage.getItem('jarvis_groq_key') || '';
+// STATE
+let apiKey = localStorage.getItem('nova_groq_key') || '';
+let ttsKey = localStorage.getItem('nova_tts_key')  || '';
 let history = [];
 let busy = false;
+let voiceEnabled = localStorage.getItem('nova_voice') === 'true';
+let voiceLang = localStorage.getItem('nova_voice_lang') || 'auto';
+let speaking = false;
+let _ttsAudio = null;
+let wakeWordOn = false;
+let wakeRecog = null;
+let micActive = false;
+let recognition = null;
 
-// ===== SYSTEM PROMPT =====
-const SYS = `You are JARVIS — a highly intelligent personal assistant. You are helpful, honest, and direct. Like Claude from Anthropic — thoughtful, nuanced, and genuinely useful.
-
-Personality: Warm but precise. Confident without being arrogant. Proactive — anticipate what the user actually needs, not just what they literally asked.
-
-Capabilities: Writing, analysis, coding, research, math, creative work, translation, summarisation, brainstorming, and general knowledge. You handle complex tasks and explain things clearly at any level.
-
-LANGUAGE RULE — CRITICAL: Detect the language of EVERY user message. Reply in the EXACT same language and script.
-- Tamil Unicode script → reply fully in Tamil Unicode (so TTS can read it aloud)
-- Malayalam Unicode script → reply fully in Malayalam Unicode (so TTS can read it aloud)
-- Tanglish (Tamil words in English letters) → reply in natural Tanglish mix
-- Manglish (Malayalam words in English letters) → reply in natural Manglish mix
-- English → reply in English
-NEVER mix scripts. NEVER switch language unless the user switches first.
-TTS will read your reply aloud — so use proper Unicode script for Tamil and Malayalam, not transliteration.
-
-Style: Concise and sharp — no filler, no unnecessary disclaimers. Be direct. Never say "I'm just an AI" — you are JARVIS.`;
-
-// ===== INIT =====
-if (apiKey) {
-  document.getElementById('apiKeyInput').value = apiKey;
-  document.getElementById('apiKeyInput').classList.add('valid');
-  setKeyUI(true);
-}
-if (window.location.protocol === 'file:') {
-  document.getElementById('corsBanner').classList.add('show');
-  document.getElementById('hint').textContent = '⚠️ file:// detected — run via python -m http.server 8080 then open localhost:8080/JARVIS.html';
-}
+// CLOCK
 setInterval(() => {
   document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US',{hour12:false});
 }, 1000);
 
+// INPUT RESIZE
 const ta = document.getElementById('userInput');
 ta.addEventListener('input', function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px'; });
-ta.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} });
+ta.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); } });
 
-// ===== KEY =====
+// RESTORE
+if(apiKey){ document.getElementById('apiKeyInput').value=apiKey; setKeyUI(true); }
+if(ttsKey){ document.getElementById('ttsKeyInput').value=ttsKey; setTtsKeyUI(true); }
+document.getElementById('voiceOn').checked = voiceEnabled;
+document.getElementById('vtl').textContent = voiceEnabled ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
+document.getElementById('voiceLang').value = voiceLang;
+const sLang = localStorage.getItem('nova_ui_lang') || 'EN';
+['EN','TA','ML','MIX'].forEach(x => { const b=document.getElementById('l'+x); if(b) b.classList.toggle('active',x===sLang); });
+const sName = localStorage.getItem('nova_name') || ''; if(sName) document.getElementById('sName').value=sName;
+const sRole = localStorage.getItem('nova_role') || ''; if(sRole) document.getElementById('sRole').value=sRole;
+const sWaha = localStorage.getItem('nova_waha') || ''; if(sWaha) document.getElementById('sWaha').value=sWaha;
+
+// SYSTEM PROMPT
+function buildSys() {
+  const name = localStorage.getItem('nova_name') || 'the user';
+  const role = localStorage.getItem('nova_role') || '';
+  return `You are NOVA — an advanced personal AI assistant. You are brilliant, warm, and genuinely useful. You combine the intelligence of Claude, the personality of Iron Man's JARVIS, and the helpfulness of a real personal assistant.
+
+${role ? `You are personally assisting ${name} — ${role}.` : `You are assisting ${name}.`}
+
+PERSONALITY:
+- Intelligent and proactive — anticipate needs, not just answer questions
+- Warm, confident, and direct — no fluff or unnecessary caveats
+- Personable — reference context from earlier in the conversation
+- Never say "I'm just an AI" — you are NOVA
+
+CAPABILITIES: Writing, analysis, coding, research, math, translation, planning, creative work, brainstorming, summarisation, explanations at any level.
+
+ACTION COMMANDS — When user asks to send a WhatsApp message or email, output this JSON on its own line then give a natural reply:
+WhatsApp: {"action":"whatsapp","to":"<number with country code>","message":"<message text>"}
+Email: {"action":"email","to":"<email>","subject":"<subject>","body":"<body>"}
+
+LANGUAGE — CRITICAL:
+- Tamil Unicode → reply in Tamil Unicode (for TTS)
+- Malayalam Unicode → reply in Malayalam Unicode (for TTS)
+- Tanglish → Tanglish reply
+- Manglish → Manglish reply
+- English → English
+Never mix scripts. Never switch unless user switches first.
+
+STYLE: Sharp and concise. **Bold** key points. Give real recommendations, not hedge lists.`;
+}
+let SYS = buildSys();
+function rebuildSys() { SYS = buildSys(); }
+
+// KEYS
 function saveKey() {
   const v = document.getElementById('apiKeyInput').value.trim();
-  if (!v) return;
-  if (!v.startsWith('gsk_')) {
-    alert('Groq keys start with gsk_  —  please check your key from console.groq.com');
-    return;
-  }
-  apiKey = v;
-  localStorage.setItem('jarvis_groq_key', v);
-  document.getElementById('apiKeyInput').classList.add('valid');
-  setKeyUI(true);
+  if(!v||!v.startsWith('gsk_')){ alert('Groq keys start with gsk_'); return; }
+  apiKey=v; localStorage.setItem('nova_groq_key',v); setKeyUI(true);
 }
 function setKeyUI(ok) {
-  document.getElementById('keyDot').className = ok ? 'dot' : 'dot warn';
-  document.getElementById('keyTxt').textContent = ok ? 'KEY ACTIVE' : 'NO KEY';
+  document.getElementById('keyDot').className = ok?'dot':'dot warn';
+  document.getElementById('keyTxt').textContent = ok?'KEY ACTIVE':'NO KEY';
+  if(ok) document.getElementById('apiKeyInput').classList.add('valid');
+}
+function saveTtsKey() {
+  const v = document.getElementById('ttsKeyInput').value.trim();
+  if(!v) return;
+  ttsKey=v; localStorage.setItem('nova_tts_key',v); setTtsKeyUI(true);
+}
+function setTtsKeyUI(ok) {
+  document.getElementById('ttsDot').className = ok?'dot':'dot warn';
+  document.getElementById('ttsTxt').textContent = ok?'TTS READY':'NO KEY';
 }
 
-// ===== LANG =====
-function setLang(l) {
-  ['EN','TA','ML','MIX'].forEach(x => {
-    const btn = document.getElementById('l'+x);
-    if (btn) btn.classList.toggle('active', x===l);
-  });
-  localStorage.setItem('jarvis_ui_lang', l);
-
-  const langMap = { EN: 'en-US', TA: 'ta-IN', ML: 'ml-IN', MIX: 'auto' };
-  const vl = langMap[l] || 'auto';
-  document.getElementById('voiceLang').value = vl;
-  voiceLang = vl;
-  localStorage.setItem('jarvis_voice_lang', vl);
-
-  // Update STT recognition language too
-  if (recognition) {
-    recognition.lang = vl === 'auto' ? 'en-US' : vl;
-  }
-
-  // Google TTS handles all languages natively — no device voice install needed
+// SEND
+function setStatus(loading) {
+  const d=document.getElementById('statusDot'), t=document.getElementById('statusTxt');
+  d.className=loading?'dot warn':'dot'; t.textContent=loading?'THINKING':'READY';
 }
-
-// ===== MODALS =====
-function showSetup() { document.getElementById('setupModal').classList.add('show'); }
-function showCors()  { document.getElementById('corsModal').classList.add('show'); }
-function closeM(id)  { document.getElementById(id).classList.remove('show'); }
-window.addEventListener('click', e => {
-  ['setupModal','corsModal'].forEach(id => {
-    if (e.target.id === id) closeM(id);
-  });
-});
-
-// ===== CHAT =====
-function clearChat() {
-  history = [];
-  const m = document.getElementById('messages');
-  m.innerHTML = '';
-  const w = document.createElement('div');
-  w.className='welcome'; w.id='welcome';
-  w.innerHTML=`<div class="w-ring">J</div><h2>SESSION CLEARED</h2><div class="free-badge">⚡ JARVIS READY</div><p>Memory reset. New session started.</p><div class="chips"><div class="chip" onclick="sq('Daily briefing.')">Daily briefing</div><div class="chip" onclick="sq('Attendance today?')">Attendance</div><div class="chip" onclick="sq('இன்னைக்கு என்ன நடக்குது?')">இன்னைக்கு?</div></div>`;
-  m.appendChild(w);
+function showTyping() {
+  document.getElementById('welcome')?.remove();
+  const m=document.getElementById('messages');
+  const d=document.createElement('div'); d.className='msg jarvis'; d.id='typing';
+  d.innerHTML='<div class="avatar">N</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  m.appendChild(d); m.scrollTop=m.scrollHeight;
 }
-
-function sq(t) { document.getElementById('userInput').value = t; send(); }
-
-function fmt(t) {
-  return t
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g,'<em>$1</em>')
-    .replace(/`(.*?)`/g,'<code>$1</code>')
+function addMsg(role, content) {
+  document.getElementById('welcome')?.remove();
+  const m=document.getElementById('messages');
+  document.getElementById('typing')?.remove();
+  const d=document.createElement('div'); d.className='msg '+role;
+  const av=role==='user'?'U':'N';
+  const t=new Date().toLocaleTimeString('en-US',{hour12:false});
+  const html=role==='jarvis'?renderMd(content):esc(content);
+  d.innerHTML=`<div class="avatar">${av}</div><div><div class="bubble">${html}</div><div class="meta"><span>${t}</span>${role==='jarvis'?'<button class="speak-btn" onclick="speakMsg(this)" title="Read aloud">🔊</button>':''}</div></div>`;
+  m.appendChild(d); m.scrollTop=m.scrollHeight;
+  if(role==='jarvis'&&voiceEnabled) speak(content);
+}
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderMd(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^### (.+)$/gm,'<strong style="color:var(--accent);font-size:13px;">$1</strong>')
+    .replace(/^## (.+)$/gm,'<strong style="color:var(--accent3);">$1</strong>')
+    .replace(/^- (.+)$/gm,'&nbsp;&nbsp;• $1')
     .replace(/\n/g,'<br>');
 }
 
-function addMsg(role, content, ms) {
-  document.getElementById('welcome')?.remove();
-  const m = document.getElementById('messages');
-  const d = document.createElement('div');
-  d.className = `msg ${role}`;
-  const t = new Date().toLocaleTimeString('en-US',{hour12:false});
-  const model = document.getElementById('modelSel').value.split('-').slice(0,3).join(' ');
-  const speedInfo = ms ? `<span class="m-speed">${(ms/1000).toFixed(1)}s</span>` : '';
-  const speakBtn = role === 'jarvis' ? `<button class="speak-btn" onclick="speakMsg(this)" title="Read aloud">🔊</button>` : '';
-  d.innerHTML = `
-    <div class="avatar">${role==='jarvis'?'J':'A'}</div>
-    <div>
-      <div class="bubble">${role==='jarvis'?fmt(content):content}</div>
-      <div class="meta">${t}${role==='jarvis'?` <span class="m-badge">${model}</span>${speedInfo}${speakBtn}`:''}</div>
-    </div>`;
-  m.appendChild(d);
-  m.scrollTop = m.scrollHeight;
-  // Auto-speak Jarvis replies
-  if (role === 'jarvis' && voiceEnabled) {
-    setTimeout(() => speak(content), 300);
-  }
-}
-
-function showTyping() {
-  document.getElementById('welcome')?.remove();
-  const m = document.getElementById('messages');
-  const d = document.createElement('div');
-  d.className='typing-wrap'; d.id='typing';
-  d.innerHTML=`<div class="avatar" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Orbitron',monospace;font-weight:700;flex-shrink:0;background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);">J</div><div class="typing"><span></span><span></span><span></span></div>`;
-  m.appendChild(d);
-  m.scrollTop = m.scrollHeight;
-}
-function rmTyping() { document.getElementById('typing')?.remove(); }
-
-function setStatus(b) {
-  document.getElementById('statusDot').className = b ? 'dot busy' : 'dot';
-  document.getElementById('statusText').textContent = b ? 'THINKING...' : 'READY';
-}
-
-// ===== VOICE OUTPUT (TTS) =====
-let voiceEnabled = localStorage.getItem('jarvis_voice') === 'true';
-let voiceLang    = localStorage.getItem('jarvis_voice_lang') || 'auto';
-let speaking     = false;
-let ttsKey       = localStorage.getItem('jarvis_tts_key') || '';
-let _ttsAudio    = null;   // current Audio object
-
-// ── Google Cloud TTS WaveNet voice map ──────────────────────
-// Best female WaveNet voices per language
-const GCLOUD_VOICES = {
-  'ta-IN': { name: 'ta-IN-Wavenet-A', ssmlGender: 'FEMALE' },
-  'ml-IN': { name: 'ml-IN-Wavenet-A', ssmlGender: 'FEMALE' },
-  'en-IN': { name: 'en-IN-Wavenet-A', ssmlGender: 'FEMALE' },
-  'en-US': { name: 'en-IN-Wavenet-A', ssmlGender: 'FEMALE' }, // use Indian English for all English
-  'en-GB': { name: 'en-IN-Wavenet-A', ssmlGender: 'FEMALE' },
-};
-
-// Init voice toggle state
-document.getElementById('voiceOn').checked = voiceEnabled;
-document.getElementById('voiceToggleLabel').textContent = voiceEnabled ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
-document.getElementById('voiceLang').value = voiceLang;
-
-// Restore active lang button
-(function() {
-  const saved = localStorage.getItem('jarvis_ui_lang') || 'EN';
-  ['EN','TA','ML','MIX'].forEach(x => {
-    const btn = document.getElementById('l'+x);
-    if (btn) btn.classList.toggle('active', x === saved);
-  });
-})();
-
-// Init TTS key
-if (ttsKey) {
-  document.getElementById('ttsKeyInput').value = ttsKey;
-  setTtsKeyUI(true);
-}
-
-function saveTtsKey() {
-  const v = document.getElementById('ttsKeyInput').value.trim();
-  if (!v) return;
-  ttsKey = v;
-  localStorage.setItem('jarvis_tts_key', v);
-  setTtsKeyUI(true);
-}
-function setTtsKeyUI(ok) {
-  document.getElementById('ttsDot').className = ok ? 'dot' : 'dot warn';
-  document.getElementById('ttsTxt').textContent = ok ? 'TTS READY' : 'NO KEY';
-  document.getElementById('ttsKeyInput').className = 'api-input' + (ok ? ' valid' : '');
-}
-
-function toggleVoice(on) {
-  voiceEnabled = on;
-  localStorage.setItem('jarvis_voice', on);
-  document.getElementById('voiceToggleLabel').textContent = on ? 'AUTO-SPEAK ON' : 'AUTO-SPEAK OFF';
-  if (!on) stopSpeaking();
-}
-
-function setVoiceLang() {
-  voiceLang = document.getElementById('voiceLang').value;
-  localStorage.setItem('jarvis_voice_lang', voiceLang);
-}
-
-function stopSpeaking() {
-  // Stop Google TTS audio
-  if (_ttsAudio) {
-    _ttsAudio.pause();
-    _ttsAudio.src = '';
-    _ttsAudio = null;
-  }
-  // Stop browser TTS fallback
-  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-  speaking = false;
-}
-
-// ── Language detection — always from reply text ──────────────
-function detectLang(text) {
-  const mlCount = (text.match(/[\u0D00-\u0D7F]/g) || []).length;
-  const taCount = (text.match(/[\u0B80-\u0BFF]/g) || []).length;
-  if (mlCount >= 3) return 'ml-IN';
-  if (taCount >= 3) return 'ta-IN';
-  return 'en-IN';
-}
-
-function stripMarkdown(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/`(.*?)`/g, '$1')
-    .replace(/<br>/g, ' ')
-    .replace(/<[^>]+>/g, '')
-    .replace(/#{1,6}\s/g, '')
-    .trim();
-}
-
-// ── Google Cloud TTS (primary) ───────────────────────────────
-async function speakGCloud(text, lang) {
-  const voiceCfg = GCLOUD_VOICES[lang] || GCLOUD_VOICES['en-IN'];
-  const body = {
-    input: { text },
-    voice: { languageCode: lang, name: voiceCfg.name, ssmlGender: voiceCfg.ssmlGender },
-    audioConfig: {
-      audioEncoding: 'MP3',
-      speakingRate: parseFloat(document.getElementById('voiceRate').value),
-      pitch: 1.5,           // slightly warm female pitch
-      effectsProfileId: ['headphone-class-device']
-    }
-  };
-  const res = await fetch(
-    `https://texttospeech.googleapis.com/v1/text:synthesize?key=${ttsKey}`,
-    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
-  );
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `HTTP ${res.status}`);
-  }
-  const data = await res.json();
-  const audio = new Audio('data:audio/mp3;base64,' + data.audioContent);
-  _ttsAudio = audio;
-  speaking = true;
-  audio.onended  = () => { speaking = false; _ttsAudio = null; };
-  audio.onerror  = () => { speaking = false; _ttsAudio = null; };
-  audio.play();
-}
-
-// ── Browser TTS fallback (no key / API error) ────────────────
-function pickVoice(voices, lang) {
-  const langBase = lang.split('-')[0];
-  const femaleKw = ['female','woman','heera','priya','aditi','lekha','veena','kanya','kavya','tanvi'];
-  const maleKw   = ['male','man','ravi','mohan'];
-  function isFemale(v) {
-    const n = v.name.toLowerCase();
-    return femaleKw.some(k => n.includes(k)) && !maleKw.some(k => n.includes(k));
-  }
-  if (lang === 'ta-IN' || lang === 'ml-IN') {
-    return voices.find(v => v.lang === lang && isFemale(v))
-        || voices.find(v => v.lang.startsWith(langBase))
-        || voices.find(v => v.lang === 'en-IN' && isFemale(v))
-        || voices.find(v => v.lang === 'en-IN')
-        || voices.find(v => v.lang.startsWith('en') && isFemale(v))
-        || null;
-  }
-  return voices.find(v => v.lang === 'en-IN' && isFemale(v))
-      || voices.find(v => v.lang === 'en-IN')
-      || voices.find(v => v.lang.startsWith('en') && isFemale(v))
-      || null;
-}
-
-function speakBrowser(text, lang) {
-  if (!('speechSynthesis' in window)) return;
-  function doSpeak(voices) {
-    const utter     = new SpeechSynthesisUtterance(text);
-    utter.rate      = parseFloat(document.getElementById('voiceRate').value);
-    utter.pitch     = 1.05;
-    utter.volume    = 1.0;
-    utter.lang      = lang;
-    const match     = pickVoice(voices, lang);
-    if (match) utter.voice = match;
-    utter.onstart   = () => { speaking = true; };
-    utter.onend     = () => { speaking = false; };
-    utter.onerror   = () => { speaking = false; };
-    window.speechSynthesis.speak(utter);
-  }
-  const v = window.speechSynthesis.getVoices();
-  if (v.length > 0) doSpeak(v);
-  else {
-    window.speechSynthesis.onvoiceschanged = () => {
-      window.speechSynthesis.onvoiceschanged = null;
-      doSpeak(window.speechSynthesis.getVoices());
-    };
-  }
-}
-
-// ── Main speak() — tries Google TTS first, browser fallback ──
-async function speak(text) {
-  stopSpeaking();
-  const clean = stripMarkdown(text);
-  if (!clean) return;
-
-  // Always detect language from the actual reply text
-  const selLang = document.getElementById('voiceLang').value;
-  const lang    = (selLang === 'auto' || selLang === 'en-US' || selLang === 'en-GB')
-                    ? detectLang(clean)
-                    : selLang;
-
-  if (ttsKey) {
-    try {
-      await speakGCloud(clean, lang);
-      return;
-    } catch(e) {
-      console.warn('[JARVIS TTS] Google Cloud failed:', e.message, '— falling back to browser TTS');
-      // If invalid key, clear it so user knows
-      if (e.message.includes('API_KEY') || e.message.includes('403') || e.message.includes('400')) {
-        addMsg('jarvis', `⚠️ Google TTS error: ${e.message}\n\nCheck your TTS API key or enable the Cloud Text-to-Speech API in Google Cloud Console.`);
-        setTtsKeyUI(false);
-      }
-    }
-  }
-  // Fallback: browser TTS
-  speakBrowser(clean, lang);
-}
-
-// Speak button on each message
-function speakMsg(btn) {
-  const bubble = btn.closest('.msg').querySelector('.bubble');
-  speak(bubble.innerText);
-}
-
-// List available voices (browser fallback debug)
-function listVoices() {
-  if (ttsKey) {
-    addMsg('jarvis',
-      '✅ **Google Cloud TTS is active** — voices are server-side, no local install needed.\n\n' +
-      '**Voices in use:**\n' +
-      '• Tamil → `ta-IN-Wavenet-A` (Female)\n' +
-      '• Malayalam → `ml-IN-Wavenet-A` (Female)\n' +
-      '• English → `en-IN-Wavenet-A` (Female, Indian accent)\n\n' +
-      'Language is auto-detected from each reply. No manual switching needed.'
-    );
-    return;
-  }
-  // Browser TTS fallback info
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices.length) { addMsg('jarvis', '⚠️ No browser TTS voices loaded. Add a Google TTS key for best results.'); return; }
-  const relevant = ['ta-IN','ml-IN','en-IN','en-US'];
-  const byLang = {};
-  voices.forEach(v => { if (!byLang[v.lang]) byLang[v.lang]=[]; byLang[v.lang].push(v.name); });
-  let out = '🔊 **Browser TTS Voices** (Google TTS key not set)\n\n';
-  relevant.forEach(l => { if (byLang[l]) out += `**${l}:** ${byLang[l].join(', ')}\n`; });
-  out += '\n⚠️ Add your Google Cloud TTS key above for Tamil/Malayalam WaveNet voices.';
-  addMsg('jarvis', out);
-}
-
-// ===== VOICE INPUT (STT) =====
-let recognition = null;
-let isListening = false;
-
-function initRecognition() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return null;
-  const r = new SR();
-  r.continuous = false;
-  r.interimResults = false;
-  r.lang = voiceLang === 'auto' ? 'en-US' : voiceLang;
-
-  r.onresult = e => {
-    const transcript = e.results[0][0].transcript;
-    document.getElementById('userInput').value = transcript;
-    setMicUI(false);
-    isListening = false;
-    send();
-  };
-  r.onerror = () => { setMicUI(false); isListening = false; };
-  r.onend   = () => { setMicUI(false); isListening = false; };
-  return r;
-}
-
-function setMicUI(on) {
-  const btn = document.getElementById('micBtn');
-  btn.classList.toggle('listening', on);
-  btn.title = on ? 'Listening… click to stop' : 'Voice input';
-}
-
-function toggleMic() {
-  if (isListening) {
-    recognition?.stop();
-    setMicUI(false);
-    isListening = false;
-    return;
-  }
-  recognition = initRecognition();
-  if (!recognition) {
-    alert('Voice input not supported in this browser. Use Chrome or Edge.');
-    return;
-  }
-  recognition.lang = voiceLang === 'auto' ? 'en-US' : voiceLang;
-  recognition.start();
-  setMicUI(true);
-  isListening = true;
-}
-
-// Patch addMsg to add speak button + auto-speak
-const _origAddMsg = addMsg;
-// Override to inject speak button and auto-speak
-
 async function send() {
-  if (busy) return;
-  const inp = document.getElementById('userInput');
-  const text = inp.value.trim();
-  if (!text) return;
-  if (!apiKey) { showSetup(); return; }
-
-  if (window.location.protocol === 'file:') {
-    if (!confirm('Running from file:// will fail due to CORS.\n\nFix: python -m http.server 8080\nThen open: http://localhost:8080/JARVIS.html\n\nContinue anyway?')) return;
-  }
-
-  inp.value = ''; inp.style.height = 'auto';
-  addMsg('user', text);
-  history.push({ role:'user', content: text });
-
-  busy = true;
-  document.getElementById('sendBtn').disabled = true;
-  setStatus(true);
-  showTyping();
-
-  const model = document.getElementById('modelSel').value;
-  const t0 = Date.now();
-
+  if(busy) return;
+  const inp=document.getElementById('userInput');
+  const text=inp.value.trim();
+  if(!text) return;
+  if(!apiKey){ alert('Please save your Groq API key first.'); return; }
+  inp.value=''; inp.style.height='auto';
+  addMsg('user',text);
+  history.push({role:'user',content:text});
+  busy=true; document.getElementById('sendBtn').disabled=true; setStatus(true); showTyping();
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: model,
-        messages: [
-          { role: 'system', content: SYS },
-          ...history
-        ],
-        temperature: 0.7,
-        max_tokens: 1024,
-        top_p: 0.9
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({
+        model:document.getElementById('modelSel').value,
+        messages:[{role:'system',content:SYS},...history],
+        max_tokens:2048,temperature:0.72,stream:false
       })
     });
-
-    const data = await res.json();
-    const ms = Date.now() - t0;
-    rmTyping();
-
-    if (data.error) {
-      const msg = data.error.message || 'API error';
-      addMsg('jarvis', `⚠️ Error: ${msg}\n\nIf key is wrong, get a new one from **console.groq.com → API Keys**`);
-      history.pop();
-    } else {
-      const reply = data.choices?.[0]?.message?.content || 'No response.';
-      addMsg('jarvis', reply, ms);
-      history.push({ role:'assistant', content: reply });
-    }
-
-  } catch (err) {
-    rmTyping();
-    if (window.location.protocol === 'file:' || err.message?.includes('fetch')) {
-      document.getElementById('corsBanner').classList.add('show');
-      addMsg('jarvis', `⚠️ CORS blocked — browser cannot call APIs from file://\n\n**Fix:** Open terminal in this folder and run:\n\`python -m http.server 8080\`\nThen open **http://localhost:8080/JARVIS.html**`);
-    } else {
-      addMsg('jarvis', `⚠️ Network error: ${err.message}`);
-    }
-    history.pop();
+    if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e?.error?.message||'HTTP '+res.status); }
+    const data=await res.json();
+    const reply=data.choices[0].message.content;
+    history.push({role:'assistant',content:reply});
+    if(history.length>40) history=history.slice(-40);
+    handleActions(reply);
+  } catch(e) {
+    document.getElementById('typing')?.remove();
+    addMsg('jarvis','⚠️ Error: '+e.message);
   }
+  busy=false; document.getElementById('sendBtn').disabled=false; setStatus(false);
+}
+function sq(t){ document.getElementById('userInput').value=t; send(); }
 
-  busy = false;
-  document.getElementById('sendBtn').disabled = false;
-  setStatus(false);
-  inp.focus();
+// ACTIONS
+function handleActions(reply) {
+  const m=reply.match(/\{[\s\S]*?"action"\s*:\s*"(whatsapp|email)"[\s\S]*?\}/);
+  if(m){
+    try {
+      const a=JSON.parse(m[0]);
+      const clean=reply.replace(m[0],'').trim();
+      if(a.action==='whatsapp'){ addMsg('jarvis',clean||'Ready to send.'); showWaConfirm(a.to,a.message); return; }
+      if(a.action==='email'){ addMsg('jarvis',clean||'Opening Gmail.'); showEmailConfirm(a.to,a.subject,a.body); return; }
+    } catch(e){}
+  }
+  addMsg('jarvis',reply);
 }
 
-
-
-// Global error catcher — shows any JS crash visibly in chat
-window.onerror = function(msg, src, line, col, err) {
-  console.error('JARVIS JS Error:', msg, 'line:', line);
+// WHATSAPP
+function startWhatsApp(){ const u=localStorage.getItem('nova_waha')||''; document.getElementById('waUrl').value=u; document.getElementById('waModal').classList.add('open'); }
+function showWaConfirm(to,msg){ document.getElementById('waNumber').value=to||''; document.getElementById('waMsg').value=msg||''; startWhatsApp(); }
+async function doSendWa(){
+  const url=document.getElementById('waUrl').value.trim();
+  const num=document.getElementById('waNumber').value.trim();
+  const msg=document.getElementById('waMsg').value.trim();
+  if(!url){alert('Enter your WAHA URL in Settings first.');return;}
+  if(!num){alert('Enter a phone number.');return;}
+  if(!msg){alert('Enter a message.');return;}
+  localStorage.setItem('nova_waha',url); document.getElementById('sWaha').value=url;
   try {
-    addMsg('jarvis', `⚠️ **JS Error (line ${line}):** ${msg}\n\nPlease screenshot this and report.`);
-  } catch(e) {}
-  return false;
-};
-</script>
+    const chatId=num.replace(/[^0-9]/g,'')+'@c.us';
+    const res=await fetch(url+'/api/sendText',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chatId,text:msg,session:'default'})});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    closeM('waModal'); addMsg('jarvis','✅ WhatsApp sent to **'+num+'**.');
+  } catch(e){ closeM('waModal'); addMsg('jarvis','⚠️ WhatsApp failed: '+e.message+'\n\nCheck your WAHA server is running.'); }
+}
 
+// EMAIL
+function startEmail(){ document.getElementById('emailModal').classList.add('open'); }
+function showEmailConfirm(to,sub,body){ document.getElementById('emailTo').value=to||''; document.getElementById('emailSub').value=sub||''; document.getElementById('emailBody').value=body||''; startEmail(); }
+function doSendEmail(){
+  const to=document.getElementById('emailTo').value.trim();
+  const sub=document.getElementById('emailSub').value.trim();
+  const body=document.getElementById('emailBody').value.trim();
+  if(!to){alert('Enter recipient.');return;}
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(to)+'&su='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body),'_blank');
+  closeM('emailModal'); addMsg('jarvis','📧 Gmail compose opened for **'+to+'**.');
+}
+
+function closeM(id){ document.getElementById(id).classList.remove('open'); }
+function toggleSettings(){ document.getElementById('settingsPanel').classList.toggle('open'); }
+function clearChat(){ history=[]; document.getElementById('messages').innerHTML='<div class="welcome" id="welcome"><div class="welcome-orb"><div class="wo1"></div><div class="wo2"></div><div class="wo3"></div><div class="wcore">N</div></div><h2>NOVA ONLINE</h2><p>Your intelligent personal assistant.</p></div>'; }
+
+// LANG
+function setLang(l){
+  ['EN','TA','ML','MIX'].forEach(x=>{const b=document.getElementById('l'+x);if(b)b.classList.toggle('active',x===l);});
+  localStorage.setItem('nova_ui_lang',l);
+  const m={EN:'en-IN',TA:'ta-IN',ML:'ml-IN',MIX:'auto'};
+  const vl=m[l]||'auto';
+  document.getElementById('voiceLang').value=vl; voiceLang=vl; localStorage.setItem('nova_voice_lang',vl);
+  if(recognition) recognition.lang=vl==='auto'?'en-IN':vl;
+}
+
+// TTS
+const GCLOUD_VOICES={
+  'en-IN-F':{name:'en-IN-Wavenet-D',ssmlGender:'FEMALE'},
+  'en-IN-M':{name:'en-IN-Wavenet-C',ssmlGender:'MALE'},
+  'ta-IN-F':{name:'ta-IN-Wavenet-A',ssmlGender:'FEMALE'},
+  'ta-IN-M':{name:'ta-IN-Wavenet-B',ssmlGender:'MALE'},
+  'ml-IN-F':{name:'ml-IN-Wavenet-A',ssmlGender:'FEMALE'},
+  'ml-IN-M':{name:'ml-IN-Wavenet-B',ssmlGender:'MALE'},
+};
+function detectLang(text){
+  const ml=(text.match(/[\u0D00-\u0D7F]/g)||[]).length;
+  const ta=(text.match(/[\u0B80-\u0BFF]/g)||[]).length;
+  if(ml>=3)return 'ml-IN'; if(ta>=3)return 'ta-IN'; return 'en-IN';
+}
+function stripMd(t){ return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/`(.*?)`/g,'$1').replace(/<br>/g,' ').replace(/<[^>]+>/g,'').replace(/#{1,6}\s/g,'').replace(/\{[\s\S]*?"action"[\s\S]*?\}/,'').trim(); }
+function stopSpeaking(){
+  if(_ttsAudio){_ttsAudio.pause();_ttsAudio.src='';_ttsAudio=null;}
+  if('speechSynthesis'in window)window.speechSynthesis.cancel();
+  speaking=false; document.getElementById('novaOrb').classList.remove('speaking');
+}
+async function speak(text){
+  stopSpeaking();
+  const clean=stripMd(text); if(!clean)return;
+  const selLang=document.getElementById('voiceLang').value;
+  // Resolve voice key: auto = detect base lang + use last gender pref
+  let voiceKey;
+  if(selLang==='auto'){
+    const baseLang=detectLang(clean); // 'ta-IN','ml-IN','en-IN'
+    const genderPref=localStorage.getItem('nova_gender_pref')||'F';
+    voiceKey=baseLang+'-'+genderPref;
+  } else {
+    voiceKey=selLang; // already 'ta-IN-F' etc
+    // Save gender pref from manual selection
+    const gSuffix=selLang.slice(-1); // 'F' or 'M'
+    if(gSuffix==='F'||gSuffix==='M') localStorage.setItem('nova_gender_pref',gSuffix);
+  }
+  const lang=voiceKey.slice(0,-2); // strip -F/-M for utterance lang code e.g. 'ta-IN'
+  document.getElementById('novaOrb').classList.add('speaking');
+  if(ttsKey){
+    try{
+      const cfg=GCLOUD_VOICES[voiceKey]||GCLOUD_VOICES['en-IN-F'];
+      const body={input:{text:clean},voice:{languageCode:lang,name:cfg.name,ssmlGender:cfg.ssmlGender},audioConfig:{audioEncoding:'MP3',speakingRate:parseFloat(document.getElementById('voiceRate').value),pitch:2.0,effectsProfileId:['headphone-class-device']}};
+      const res=await fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key='+ttsKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(!res.ok)throw new Error('TTS '+res.status);
+      const data=await res.json();
+      const audio=new Audio('data:audio/mp3;base64,'+data.audioContent);
+      _ttsAudio=audio; speaking=true;
+      audio.onended=()=>{speaking=false;_ttsAudio=null;document.getElementById('novaOrb').classList.remove('speaking');};
+      audio.onerror=()=>{speaking=false;document.getElementById('novaOrb').classList.remove('speaking');};
+      audio.play(); return;
+    }catch(e){console.warn('TTS error:',e.message);}
+  }
+  if(!('speechSynthesis'in window))return;
+  const utter=new SpeechSynthesisUtterance(clean);
+  utter.lang=lang; utter.rate=parseFloat(document.getElementById('voiceRate').value); utter.pitch=1.1;
+  const voices=window.speechSynthesis.getVoices();
+  const genderPref2=localStorage.getItem('nova_gender_pref')||'F';
+  const isFemale=genderPref2==='F';
+  const fk=isFemale?['female','heera','aditi','priya','lekha','veena']:['male','ravi','mohan','hemant'];
+  const oppFk=isFemale?['male','ravi','mohan']:['female','heera','aditi'];
+  const match=voices.find(v=>v.lang===lang&&fk.some(k=>v.name.toLowerCase().includes(k)))
+    ||voices.find(v=>v.lang.startsWith(lang.split('-')[0])&&!oppFk.some(k=>v.name.toLowerCase().includes(k)))
+    ||voices.find(v=>v.lang==='en-IN');
+  if(match)utter.voice=match;
+  utter.onstart=()=>{speaking=true;};
+  utter.onend=()=>{speaking=false;document.getElementById('novaOrb').classList.remove('speaking');};
+  window.speechSynthesis.speak(utter);
+}
+function speakMsg(btn){speak(btn.closest('.msg').querySelector('.bubble').innerText);}
+function toggleVoice(on){voiceEnabled=on;localStorage.setItem('nova_voice',on);document.getElementById('vtl').textContent=on?'AUTO-SPEAK ON':'AUTO-SPEAK OFF';if(!on)stopSpeaking();}
+function setVoiceLang(){
+  voiceLang=document.getElementById('voiceLang').value;
+  localStorage.setItem('nova_voice_lang',voiceLang);
+  const g=voiceLang.slice(-1);
+  if(g==='F'||g==='M') localStorage.setItem('nova_gender_pref',g);
+}
+function listVoices(){
+  if(ttsKey){addMsg('jarvis','✅ **Google Cloud TTS active**\n\n• Tamil → `ta-IN-Wavenet-A` (Female)\n• Malayalam → `ml-IN-Wavenet-A` (Female)\n• English → `en-IN-Wavenet-A` (Female, Indian accent)');return;}
+  const vs=window.speechSynthesis.getVoices();
+  if(!vs.length){addMsg('jarvis','No browser voices loaded yet.');return;}
+  const bl={};vs.forEach(v=>{if(!bl[v.lang])bl[v.lang]=[];bl[v.lang].push(v.name);});
+  let out='🔊 **Browser TTS Voices**\n\n';
+  ['ta-IN','ml-IN','en-IN','en-US'].forEach(l=>{if(bl[l])out+='**'+l+':** '+bl[l].join(', ')+'\n';});
+  addMsg('jarvis',out);
+}
+
+// STT MIC
+function toggleMic(){
+  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){alert('Speech recognition not supported. Use Chrome.');return;}
+  if(micActive){recognition?.stop();return;}
+  recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
+  const lang=document.getElementById('voiceLang').value; recognition.lang=lang==='auto'?'en-IN':lang;
+  recognition.interimResults=false; recognition.maxAlternatives=1;
+  recognition.onstart=()=>{micActive=true;document.getElementById('micBtn').classList.add('active');document.getElementById('novaOrb').classList.add('listening');};
+  recognition.onresult=e=>{document.getElementById('userInput').value=e.results[0][0].transcript;send();};
+  recognition.onend=()=>{micActive=false;document.getElementById('micBtn').classList.remove('active');document.getElementById('novaOrb').classList.remove('listening');};
+  recognition.onerror=()=>{micActive=false;document.getElementById('micBtn').classList.remove('active');document.getElementById('novaOrb').classList.remove('listening');};
+  recognition.start();
+}
+
+// WAKE WORD
+function toggleWakeWord(){wakeWordOn?stopWakeWord():startWakeWord();}
+function startWakeWord(){
+  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){addMsg('jarvis','Wake word requires Chrome browser.');return;}
+  wakeWordOn=true;
+  document.getElementById('wakeBtn').innerHTML='<span class="ic">🎤</span>Disable "Hey NOVA"';
+  document.getElementById('wakeStatus').textContent='● listening'; document.getElementById('wakeStatus').className='wake-status on';
+  document.getElementById('wakeInd').classList.add('show');
+  listenForWake();
+}
+function stopWakeWord(){
+  wakeWordOn=false; wakeRecog?.stop(); wakeRecog=null;
+  document.getElementById('wakeBtn').innerHTML='<span class="ic">🎤</span>Enable "Hey NOVA"';
+  document.getElementById('wakeStatus').textContent='off'; document.getElementById('wakeStatus').className='wake-status';
+  document.getElementById('wakeInd').classList.remove('show');
+}
+function listenForWake(){
+  if(!wakeWordOn)return;
+  wakeRecog=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
+  wakeRecog.lang='en-IN'; wakeRecog.continuous=false; wakeRecog.interimResults=false;
+  wakeRecog.onresult=e=>{
+    const said=e.results[0][0].transcript.toLowerCase();
+    if(said.includes('nova')||said.includes('hey nova')){
+      const ind=document.getElementById('wakeInd');
+      ind.textContent='🎤 NOVA activated — speak now…';
+      setTimeout(()=>{ind.textContent='🎤 Listening for "Hey NOVA"…';},3000);
+      toggleMic();
+    }
+  };
+  wakeRecog.onend=()=>{if(wakeWordOn)setTimeout(listenForWake,800);};
+  wakeRecog.onerror=()=>{if(wakeWordOn)setTimeout(listenForWake,2000);};
+  wakeRecog.start();
+}
+function toggleWake(){if(wakeWordOn)stopWakeWord();else startWakeWord();}
+
+window.onerror=function(msg,src,line){console.error('NOVA:',msg,'L:',line);return false;};
+</script>
 </body>
 </html>
